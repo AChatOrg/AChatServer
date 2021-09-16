@@ -16,4 +16,4 @@ app.get('/', (req, res) => {
 
 server.listen(config.port);
 mongoose.connect(config.mongodpServerUrl);
-userApi.listen(app);
+userApi.listen(app, onlineUserList);

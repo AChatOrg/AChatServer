@@ -8,14 +8,18 @@ module.exports = {
     },
 
     add: function (user) {
-        map.set(user.id, user);
+        map.set(user.ipv4, user);
     },
 
-    get: function (id) {
-        return map.get(id);
+    get: function (ipv4) {
+        return map.get(ipv4);
     },
 
-    remove: function (id) {
-        map.delete(id);
+    remove: function (ipv4) {
+        map.delete(ipv4);
+    },
+
+    exist: function (ipv4) {
+        return map.has(ipv4);
     }
 }
