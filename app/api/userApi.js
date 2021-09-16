@@ -1,14 +1,15 @@
 const userManager = require('../bl/UserManager');
-const User = require('../model/User');
+const LoggedUser = require('../model/LoggedUser');
 
 module.exports = {
     listen: function (app) {
         app.post('/register', (req, res) => {
             let body = req.body;
-            let user = new User(null, body.username, body.password, body.name, body.bio, body.gender);
+            let user = new LoggedUser(null, body.username, body.password,
+                 body.avatar, body.bio, body.gender, undefined);
             userManager.register(user)
                 .then(userSaved => {
-                    res.send(userSaved);
+                    res.json(userSaved);
                     console.log('success register :' + userSaved);
                 })
                 .catch(err => {

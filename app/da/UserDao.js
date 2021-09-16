@@ -1,5 +1,5 @@
 const UserModel = require('./schema/UserModel');
-const User = require('../model/User');
+const LoggedUser = require('../model/LoggedUser');
 
 module.exports = {
     save: function (user) {
@@ -7,21 +7,23 @@ module.exports = {
             let userDb = new UserModel({
                 username: user.username,
                 password: user.password,
-                name: user.name,
+                avatar: user.avatar,
                 bio: user.bio,
-                gender: user.gender
+                gender: user.gender,
+                rank: user.rank
             });
             userDb.save((err, userSaved) => {
                 if (err)
                     reject(err);
                 else {
-                    let userResult = new User(
+                    let userResult = new LoggedUser(
                         userSaved._id,
                         userSaved.username,
-                        userSaved.password,
-                        userSaved.name,
+                        undefined,
+                        userSaved.avatar,
                         userSaved.bio,
-                        userSaved.gender
+                        userSaved.gender,
+                        userSaved.rank
                     );
                     resolve(userResult);
                 }

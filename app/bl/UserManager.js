@@ -1,5 +1,4 @@
 const UserDao = require('../da/UserDao');
-const User = require('../model/User');
 
 module.exports = {
 
