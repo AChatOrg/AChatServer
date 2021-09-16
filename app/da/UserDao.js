@@ -7,6 +7,7 @@ module.exports = {
             let userDb = new UserModel({
                 username: user.username,
                 password: user.password,
+                name: user.name,
                 avatar: user.avatar,
                 bio: user.bio,
                 gender: user.gender,
@@ -20,6 +21,7 @@ module.exports = {
                         userSaved._id,
                         userSaved.username,
                         undefined,
+                        userSaved.name,
                         userSaved.avatar,
                         userSaved.bio,
                         userSaved.gender,

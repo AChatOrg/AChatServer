@@ -6,7 +6,7 @@ module.exports = {
         app.post('/register', (req, res) => {
             let body = req.body;
             let user = new LoggedUser(null, body.username, body.password,
-                 body.avatar, body.bio, body.gender, undefined);
+                body.name, body.avatar, body.bio, body.gender, undefined);
             userManager.register(user)
                 .then(userSaved => {
                     res.json(userSaved);
@@ -25,6 +25,12 @@ module.exports = {
                         console.error('error register :' + err);
                     }
                 });
+        });
+
+        app.get('/loginGuest', (req, res) => {
+            console.log(req.query.name);
+            var ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+            console.log(ip);
         });
     }
 };

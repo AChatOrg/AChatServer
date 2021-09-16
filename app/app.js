@@ -3,9 +3,10 @@ const http = require('http');
 const config = require('./config');
 const mongoose = require('./da/mongoose');
 const userApi = require('./api/userApi');
+const onlineUserList = require('./model/OnlineUserList');
 
 const app = express();
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 const server = http.createServer(app);
 

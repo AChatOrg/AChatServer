@@ -1,9 +1,9 @@
 
 class OnlineUser {
 
-    constructor(id, username, avatar, bio, gender, rank) {
+    constructor(id, name, avatar, bio, gender, rank) {
         this.id = id;
-        this.username = username;
+        this.name = name;
         this.avatar = avatar;
         this.bio = bio;
         this.gender = gender;
