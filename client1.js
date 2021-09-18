@@ -15,7 +15,7 @@ const recursiveAsyncReadLine = function () {
         log('----------------------');
         switch (answer) {
             case 'lgg'://loginGuest
-                axios.get(url + '/loginGuest/?name=hosein&avatar=hoseinAvatar&bio=hoseinBio&gender=1')
+                axios.get(url + '/loginGuest/?name=hosein&bio=hoseinBio&gender=1')
                     .then(res => {
                         console.log(res.data);
                     }).catch(err => {

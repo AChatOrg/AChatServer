@@ -10,10 +10,10 @@ class Key {
 
 class OnlineUser {
 
-    constructor(ipv4, rank, score, loginTime, name, avatar, bio, gender) {
+    constructor(ipv4, rank, score, loginTime, avatar, name, bio, gender) {
         this.key = new Key(ipv4, rank, score, loginTime);
-        this.name = name;
         this.avatar = avatar;
+        this.name = name;
         this.bio = bio;
         this.gender = gender;
     }

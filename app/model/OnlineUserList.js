@@ -27,7 +27,7 @@ class Tree {
         this.tree = this.tree.insert(user.key, user);
         this.map.set(user.key.ipv4, user.key);
     }
-    
+
     get(ipv4) {
         let key = this.map.get(ipv4);
         if (key) {
@@ -51,11 +51,13 @@ class Tree {
             this.map.set(newUser.key.ipv4, newUser.key);
         }
     }
-    
+
     exist(ipv4) {
-        let user = this.get(ipv4);
         let hasKey = this.map.has(ipv4);
-        if (user && hasKey) return true;
+        if (hasKey) {
+            let user = this.get(ipv4);
+            if (user) return true;
+        }
         return false;
     }
 }

@@ -1,6 +1,6 @@
 const userManager = require('../bl/UserManager');
 const LoggedUser = require('../model/LoggedUser');
-const OnlineUser = require('../model/OnlineUser');
+const OnlineUser = require('../model/OnlineUser').OnlineUser;
 
 module.exports = {
     listen: function (app, onlineUserList) {
@@ -27,14 +27,14 @@ module.exports = {
         app.get('/loginGuest', (req, res) => {
             let query = req.query;
             let ipv4 = req.headers['x-forwarded-for'] || req.socket.remoteAddress
-            let user = new OnlineUser(ipv4, query.name, query.avatar, query.bio, query.gender, 0, 0, Date.now());
+            let user = new OnlineUser(ipv4, 0, 0, Date.now(), null, query.name, query.bio, query.gender);
             if (onlineUserList.exist(ipv4)) {
                 res.status(409).send({ message: 'This user is online.' });
                 console.log('loginGuest : This user is online.');
             } else {
                 onlineUserList.add(user);
                 res.json(user);
-                console.log('success loginGuest :' + user);
+                console.log('success loginGuest : ' + user.name);
             }
         });
 
