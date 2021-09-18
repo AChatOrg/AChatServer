@@ -1,86 +1,63 @@
-// const HashMap = require('hashmap');
-// const map = new HashMap();
-
-// module.exports = {
-
-//     list: function () {
-//         let values = map.values();
-//         // values.sort((userAKey, userBKey) => {
-//         //     if (userAKey.rank < userBKey.rank) return 1;
-//         //     if (userAKey.rank > userBKey.rank) return -1;
-//         //     if (userAKey.score < userBKey.score) return 1;
-//         //     if (userAKey.score > userBKey.score) return -1;
-//         //     if (userAKey.loginTime < userBKey.loginTime) return -1;
-//         //     if (userAKey.loginTime > userBKey.loginTime) return 1;
-//         //     if (userAKey.ipv4 == userBKey.ipv4) return 0;
-//         // });
-//         return values;
-//     },
-
-//     add: function (user) {
-//         map.set(user.ipv4, user);
-//     },
-
-//     remove: function (ipv4) {
-//         map.delete(ipv4);
-//     },
-
-//     get: function (ipv4) {
-//         return map.get(ipv4);
-//     },
-
-//     exist: function (ipv4) {
-//         return map.has(ipv4);
-//     }
-// }
-
 const createTree = require('functional-red-black-tree');
+const Map = require('hashmap');
 
-var tree = createTree((userAKey, userBKey) => {
-    if (userAKey.ipv4 == userBKey.ipv4) return 0;
-    if (userAKey.rank < userBKey.rank) return 1;
-    if (userAKey.rank > userBKey.rank) return -1;
-    if (userAKey.score < userBKey.score) return 1;
-    if (userAKey.score > userBKey.score) return -1;
-    if (userAKey.loginTime < userBKey.loginTime) return -1;
-    if (userAKey.loginTime > userBKey.loginTime) return 1;
-});
+class Tree {
 
-function hash(ipv4, rank, score, loginTime){
-    let hashCode;
-    //How to implement?
-    return hashCode;
-}
+    constructor() {
+        this.map = new Map();
+        this.tree = createTree((userAKey, userBKey) => {
+            if (userAKey.ipv4 == userBKey.ipv4
+                && userAKey.rank == userBKey.rank
+                && userAKey.score == userBKey.score
+                && userAKey.loginTime == userBKey.loginTime) return 0;
+            if (userAKey.rank < userBKey.rank) return 1;
+            if (userAKey.rank > userBKey.rank) return -1;
+            if (userAKey.score < userBKey.score) return 1;
+            if (userAKey.score > userBKey.score) return -1;
+            if (userAKey.loginTime < userBKey.loginTime) return -1;
+            if (userAKey.loginTime > userBKey.loginTime) return 1;
+        });
+    }
 
-module.exports = {
+    list() {
+        return this.tree.values;
+    }
 
-    list: function () {
-        let values = tree.values;
-        // values.sort((userAKey, userBKey) => {
-        //     if (userAKey.rank < userBKey.rank) return 1;
-        //     if (userAKey.rank > userBKey.rank) return -1;
-        //     if (userAKey.score < userBKey.score) return 1;
-        //     if (userAKey.score > userBKey.score) return -1;
-        //     if (userAKey.loginTime < userBKey.loginTime) return -1;
-        //     if (userAKey.loginTime > userBKey.loginTime) return 1;
-        //     if (userAKey.ipv4 == userBKey.ipv4) return 0;
-        // });
-        return values;
-    },
+    add(user) {
+        this.tree = this.tree.insert(user.key, user);
+        this.map.set(user.key.ipv4, user.key);
+    }
+    
+    get(ipv4) {
+        let key = this.map.get(ipv4);
+        if (key) {
+            return this.tree.get(key);
+        }
+    }
 
-    add: function (user) {
-        tree = tree.insert(user.key, user);
-    },
+    remove(ipv4) {
+        let key = this.map.get(ipv4);
+        if (key) {
+            this.tree = this.tree.remove(key);
+            this.map.delete(ipv4);
+        }
+    }
 
-    remove: function (ipv4) {
-        map.delete(ipv4);
-    },
-
-    get: function (userKey) {
-        return tree.get(userKey);
-    },
-
-    exist: function (ipv4) {
-        return map.has(ipv4);
+    update(ipv4, newUser) {
+        let oldUser = this.get(ipv4);
+        if (oldUser) {
+            oldUser.update(newUser);
+            this.map.delete(ipv4);
+            this.map.set(newUser.key.ipv4, newUser.key);
+        }
+    }
+    
+    exist(ipv4) {
+        let user = this.get(ipv4);
+        let hasKey = this.map.has(ipv4);
+        if (user && hasKey) return true;
+        return false;
     }
 }
+
+module.exports = Tree;
