@@ -17,3 +17,15 @@ app.get('/', (req, res) => {
 server.listen(config.port);
 mongoose.connect(config.mongodpServerUrl);
 userApi.listen(app, onlineUserList);
+
+const OnlineUser = require('./model/OnlineUser');
+
+for (let i = 0; i < 10; i++) {
+    onlineUserList.add(new OnlineUser(i, 0, rand(), rand(), '', '', '', 1));
+}
+onlineUserList.remove(5)
+console.log(onlineUserList.list());
+
+function rand() {
+    return Math.floor(Math.random() * 100);
+}

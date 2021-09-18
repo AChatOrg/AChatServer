@@ -1,7 +1,7 @@
 
 class LoggedUser {
 
-    constructor(id, username, password, name, avatar, bio, gender, rank) {
+    constructor(id, username, password, name, avatar, bio, gender, score, rank) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -9,6 +9,7 @@ class LoggedUser {
         this.avatar = avatar;
         this.bio = bio;
         this.gender = gender;
+        this.score = score;
         this.rank = rank;
     }
 }

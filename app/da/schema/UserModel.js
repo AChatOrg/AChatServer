@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
     avatar: { type: String },
     bio: { type: String },
     gender: { type: Number, required: true },
+    score: { type: Number, default: 0 },
     rank: { type: Number, default: 0 }
 }, {
     timestamps: true

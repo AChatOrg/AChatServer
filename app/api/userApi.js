@@ -7,7 +7,7 @@ module.exports = {
         app.post('/register', (req, res) => {
             let body = req.body;
             let user = new LoggedUser(null, body.username, body.password,
-                body.name, body.avatar, body.bio, body.gender, undefined);
+                body.name, body.avatar, body.bio, body.gender, undefined, undefined);
             userManager.register(user)
                 .then(userSaved => {
                     res.json(userSaved);
@@ -27,7 +27,7 @@ module.exports = {
         app.get('/loginGuest', (req, res) => {
             let query = req.query;
             let ipv4 = req.headers['x-forwarded-for'] || req.socket.remoteAddress
-            let user = new OnlineUser(ipv4, query.name, query.avatar, query.bio, query.gender, 0, Date.now());
+            let user = new OnlineUser(ipv4, query.name, query.avatar, query.bio, query.gender, 0, 0, Date.now());
             if (onlineUserList.exist(ipv4)) {
                 res.status(409).send({ message: 'This user is online.' });
                 console.log('loginGuest : This user is online.');
@@ -36,6 +36,10 @@ module.exports = {
                 res.json(user);
                 console.log('success loginGuest :' + user);
             }
+        });
+
+        app.get('/onlineUsers', (req, res) => {
+
         });
     }
 };

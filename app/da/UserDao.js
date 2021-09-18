@@ -11,6 +11,7 @@ module.exports = {
                 avatar: user.avatar,
                 bio: user.bio,
                 gender: user.gender,
+                score: user.score,
                 rank: user.rank
             });
             userDb.save((err, userSaved) => {
@@ -25,6 +26,7 @@ module.exports = {
                         userSaved.avatar,
                         userSaved.bio,
                         userSaved.gender,
+                        userSaved.score,
                         userSaved.rank
                     );
                     resolve(userResult);
