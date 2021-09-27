@@ -2,7 +2,8 @@ const express = require('express');
 const http = require('http');
 const config = require('./config');
 const mongoose = require('./da/mongoose');
-const userApi = require('./api/userApi');
+const loginApi = require('./api/loginApi');
+const usersApi = require('./api/usersApi');
 const OnlineUserList = require('./model/OnlineUserList');
 
 const app = express();
@@ -15,6 +16,15 @@ app.get('/', (req, res) => {
     res.send('<h1>Welcome to A Chat.</h1>')
 });
 
+//////////////////////////
+const OnlineUser = require('./model/OnlineUser').OnlineUser;
+for (let i = 0; i < 1000; i++) {
+    let user = new OnlineUser("name " + i, "bio " + i, Math.random() < 0.5 ? 1 : 2, "", true, i, i, i, i);
+    onlineUserList.add(user);
+}
+//////////////////////////
+
 server.listen(config.port);
 mongoose.connect(config.mongodpServerUrl);
-userApi.listen(app, onlineUserList);
+loginApi.listen(app, onlineUserList);
+usersApi.listen(app, onlineUserList);

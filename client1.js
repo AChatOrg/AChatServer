@@ -14,7 +14,7 @@ const recursiveAsyncReadLine = function () {
             return rl.close();
         log('----------------------');
         switch (answer) {
-            case 'lgg'://loginGuest
+            case 'lg'://loginGuest
                 axios.get(url + '/loginGuest/?name=hosein&bio=hoseinBio&gender=1')
                     .then(res => {
                         console.log(res.data);
@@ -36,6 +36,15 @@ const recursiveAsyncReadLine = function () {
                 }).catch(err => {
                     console.error(err.response.status + ': ' + err.response.data.message);
                 });
+                break;
+
+            case 'ou'://onlineUsers
+                axios.get(url + '/onlineUsers')
+                    .then(res => {
+                        console.log(res.data);
+                    }).catch(err => {
+                        console.error(err.response.status + ': ' + err.response.data.message);
+                    });
                 break;
         }
         recursiveAsyncReadLine();

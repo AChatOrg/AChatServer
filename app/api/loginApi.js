@@ -1,4 +1,4 @@
-const userManager = require('../bl/UserManager');
+const loginManager = require('../bl/loginManager');
 const LoggedUser = require('../model/LoggedUser');
 const OnlineUser = require('../model/OnlineUser').OnlineUser;
 
@@ -8,7 +8,7 @@ module.exports = {
             let body = req.body;
             let user = new LoggedUser(null, body.username, body.password,
                 body.name, body.avatar, body.bio, body.gender, undefined, undefined);
-            userManager.register(user)
+            loginManager.register(user)
                 .then(userSaved => {
                     res.json(userSaved);
                     console.log('success register :' + userSaved);
@@ -37,10 +37,6 @@ module.exports = {
                 res.json(user);
                 console.log('success loginGuest : ' + user.name);
             }
-        });
-
-        app.get('/onlineUsers', (req, res) => {
-
         });
     }
 };
