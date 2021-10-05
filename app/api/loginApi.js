@@ -25,7 +25,7 @@ module.exports = {
         });
 
         app.get('/loginGuest', (req, res) => {
-            let ipv4 = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+            let ipv4 = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
             if (onlineUserList.exist(ipv4)) {
                 res.status(409).send({ message: 'This user is online.' });
                 console.log('loginGuest : This user is online.');
