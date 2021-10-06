@@ -15,7 +15,7 @@ class Avatar {
     }
 }
 
-class OnlineUser {
+class People {
 
     constructor(name, bio, gender, avatarUrl, isOnline, ipv4, rank, score, loginTime) {
         this.name = name;
@@ -38,4 +38,4 @@ class OnlineUser {
     }
 }
 
-module.exports = { OnlineUser, Key };
+module.exports = { People, Key };
