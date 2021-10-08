@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 const UserDao = require('../da/UserDao');
 const PeopleList = require('../model/PeopleList');
 const People = require('../model/Poeple').People;
@@ -13,14 +14,22 @@ for (let i = 0; i < 10; i++) {
 
 module.exports = {
 
-    loginGuest: function (ipv4, name, bio, gender) {
-        if (peopleList.exist(ipv4)) {
-            return { logged: false, message: 'This user is online.' };
-        } else {
-            let people = new People(name, bio, gender, '', true, ipv4, 0, 0, Date.now());
-            peopleList.add(people);
-            return { logged: true, people: people };
-        }
+    loginGuest: function (name, bio, gender) {
+        let id = uuidv4();
+        let people = new People(name, bio, gender, '', true, id, 0, 0, Date.now());
+        return people;
+    },
+
+    addPeople: function (people) {
+        peopleList.add(people);
+    },
+
+    removePeople: function (id) {
+        peopleList.remove(id);
+    },
+
+    getUsers: function(){
+        return peopleList.list();
     },
 
     register: function (user) {

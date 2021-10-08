@@ -36,27 +36,11 @@ const recursiveAsyncReadLine = function () {
                 break;
 
             case 'rg'://register
-                axios.post(url + '/register', {
-                    username: 'aliUser',
-                    password: 'aliPass',
-                    name: 'ali',
-                    avatar: 'avatarUrl',
-                    bio: 'aliBio',
-                    gender: 1
-                }).then(res => {
-                    console.log(res.data);
-                }).catch(err => {
-                    console.error(err.response.status + ': ' + err.response.data.message);
-                });
+
                 break;
 
-            case 'ou'://onlineUsers
-                axios.get(url + '/onlineUsers')
-                    .then(res => {
-                        console.log(res.data);
-                    }).catch(err => {
-                        console.error(err.response.status + ': ' + err.response.data.message);
-                    });
+            case 'pp'://onlineUsers
+                socket.emit('people');
                 break;
         }
         recursiveAsyncReadLine();
@@ -77,9 +61,15 @@ socket.on('logged', user => {
 });
 
 socket.on('userCame', user => {
-    log('client/ userCame: ' + user.name);
+    log('client/ userCame: ' + user.name + ' ' + user.id);
 });
 
-socket.on('userLeft', ipv4 => {
-
+socket.on('userLeft', userId => {
+    log('client/ userLeft: ' + userId);
+});
+//----------------------------------------------------
+socket.on('people', people => {
+    for (let p of people) {
+        log(p.name);
+    }
 });

@@ -2,26 +2,22 @@ const { Server } = require("socket.io");
 
 const loginManager = require('../bl/loginManager')
 const operations = require('../config').operations;
+const peopleApi = require('./peopleApi');
 
 module.exports = {
     listen: function (server) {
         const io = new Server(server);
 
         io.use((socket, next) => {
-            let ipv4 = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address;
             let data = JSON.parse(socket.handshake.query.data);
-
-            if (data && ipv4) {
+            if (data) {
                 switch (data.operation) {
                     case operations.loginGuest:
-                        let result = loginManager.loginGuest(ipv4, data.name || 'Unknown', data.bio || '', data.gender || 1);
-                        if (result.logged) {
-                            socket.user = result.people;
-                            next();
-                            console.log('success loginGuest : ' + data.name);
-                        } else {
-                            next(new Error('This user is online.'));
-                            console.log('loginGuest : This user is online.');
+                        let people = loginManager.loginGuest(data.name || 'Unknown', data.bio || '', data.gender || 1);
+                        if (people) {
+                            socket.people = people;
+                            console.log('success loginGuest : ' + people.name);
+                            return next();
                         }
                         break;
                 }
@@ -29,11 +25,26 @@ module.exports = {
         })
 
         io.on('connection', socket => {
-            let user = socket.user;
-            socket.emit('logged', user);
-            socket.broadcast.emit('userCame', user);
-        });
+            let people = socket.people;
+            loginManager.addPeople(people);
+            socket.join(people.key.id)
+            socket.emit('logged', people);
+            socket.broadcast.emit('userCame', people);
+            console.log('connected : ' + people.name);
 
+            socket.on("disconnect", async () => {
+                let userId = socket.people.key.id;
+                const matchingSockets = await io.in(userId).allSockets();
+                const isDisconnected = matchingSockets.size === 0;
+                if (isDisconnected) {
+                    loginManager.removePeople(userId);
+                    socket.broadcast.emit("userLeft", userId);
+                    console.log('disconnected : ' + people.name);
+                }
+            });
+
+            peopleApi.listen(socket);
+        });
         // app.post('/register', (req, res) => {
         //     let body = req.body;
         //     let user = new LoggedUser(null, body.username, body.password,
