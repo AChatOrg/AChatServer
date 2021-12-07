@@ -14,9 +14,9 @@ for (let i = 0; i < 10; i++) {
 
 module.exports = {
 
-    loginGuest: function (name, bio, gender) {
-        let id = uuidv4();
-        let people = new People(name, bio, gender, '', true, id, 0, 0, Date.now());
+    createGuest: function (name, bio, gender) {
+        let uuid = uuidv4();
+        let people = new People(name, bio, gender, '', true, uuid, 0, 0, Date.now());
         return people;
     },
 
@@ -24,8 +24,8 @@ module.exports = {
         peopleList.add(people);
     },
 
-    removePeople: function (id) {
-        peopleList.remove(id);
+    removePeople: function (uuid) {
+        peopleList.remove(uuid);
     },
 
     getUsers: function(){

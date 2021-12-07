@@ -1,8 +1,8 @@
 
 class LoggedUser {
 
-    constructor(id, username, password, name, avatar, bio, gender, score, rank) {
-        this.id = id;
+    constructor(uuid, username, password, name, avatar, bio, gender, score, rank) {
+        this.uuid = uuid;
         this.username = username;
         this.password = password;
         this.name = name;

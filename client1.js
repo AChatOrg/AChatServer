@@ -22,16 +22,10 @@ const recursiveAsyncReadLine = function () {
         log('----------------------');
         switch (answer) {
             case 'lg'://loginGuest
-                // axios.get(url + '/loginGuest/?name=hosein&bio=hoseinBio&gender=1')
-                //     .then(res => {
-                //         console.log(res.data);
-                //     }).catch(err => {
-                //         console.error(err.response.status + ': ' + err.response.data.message);
-                //     });
                 socket.connect();
                 break;
 
-            case 'lo':
+            case 'lo'://logout
                 socket.disconnect();
                 break;
 
@@ -61,7 +55,7 @@ socket.on('logged', user => {
 });
 
 socket.on('userCame', user => {
-    log('client/ userCame: ' + user.name + ' ' + user.id);
+    log('client/ userCame: ' + user.name + ' ' + user.key.uuid);
 });
 
 socket.on('userLeft', userId => {

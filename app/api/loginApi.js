@@ -13,7 +13,7 @@ module.exports = {
             if (data) {
                 switch (data.operation) {
                     case operations.loginGuest:
-                        let people = loginManager.loginGuest(data.name || 'Unknown', data.bio || '', data.gender || 1);
+                        let people = loginManager.createGuest(data.name || 'Unknown', data.bio || '', data.gender || 1);
                         if (people) {
                             socket.people = people;
                             console.log('success loginGuest : ' + people.name);
@@ -27,13 +27,13 @@ module.exports = {
         io.on('connection', socket => {
             let people = socket.people;
             loginManager.addPeople(people);
-            socket.join(people.key.id)
+            socket.join(people.key.uuid)
             socket.emit('logged', people);
             socket.broadcast.emit('userCame', people);
             console.log('connected : ' + people.name);
 
             socket.on("disconnect", async () => {
-                let userId = socket.people.key.id;
+                let userId = socket.people.key.uuid;
                 const matchingSockets = await io.in(userId).allSockets();
                 const isDisconnected = matchingSockets.size === 0;
                 if (isDisconnected) {
