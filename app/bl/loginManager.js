@@ -16,7 +16,7 @@ module.exports = {
 
     createGuest: function (name, bio, gender) {
         let uuid = uuidv4();
-        let people = new People(name, bio, gender, '', true, uuid, 0, 0, Date.now());
+        let people = new People(name, bio, gender, '', true, uuid, 6, 0, Date.now());
         return people;
     },
 
