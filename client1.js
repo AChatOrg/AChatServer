@@ -55,7 +55,7 @@ socket.on('logged', user => {
 });
 
 socket.on('userCame', user => {
-    log('client/ userCame: ' + user.name + ' ' + user.key.ipv4);
+    log('client/ userCame: ' + user.name + ' ' + user.key.id);
 });
 
 socket.on('userLeft', userId => {

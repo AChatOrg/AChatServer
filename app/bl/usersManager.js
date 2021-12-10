@@ -13,25 +13,19 @@ for (let i = 0; i < 10; i++) {
 
 module.exports = {
 
-    createGuest: function (ipv4, name, bio, gender) {
-        let people = new People(name, bio, gender, '', true, ipv4, 6, 0, Date.now());
+    peopleList,
+
+    createGuest: function (id, name, bio, gender) {
+        let people = new People(name, bio, gender, '', true, id, 6, 0, Date.now());
         return people;
     },
 
     addPeopleIfNotExist: function (people) {
-        if (peopleList.exist(people.key.ipv4)) {
+        if (peopleList.exist(people.key.id)) {
             return false;
         }
         peopleList.add(people);
         return true;
-    },
-
-    removePeople: function (ipv4) {
-        peopleList.remove(ipv4);
-    },
-
-    getUsers: function () {
-        return peopleList.list();
     },
 
     register: function (user) {

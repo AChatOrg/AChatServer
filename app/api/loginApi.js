@@ -1,6 +1,6 @@
 const { Server } = require("socket.io");
 
-const loginManager = require('../bl/loginManager')
+const usersManager = require('../bl/usersManager')
 const operations = require('../config').operations;
 const peopleApi = require('./peopleApi');
 
@@ -11,10 +11,10 @@ module.exports = {
         io.use((socket, next) => {
             let data = JSON.parse(socket.handshake.query.data);
             if (data) {
-                let ip = socket.handshake.address || socket.handshake.headers["x-real-ip"];
+                let id = socket.handshake.address || socket.handshake.headers["x-real-ip"];
                 switch (data.operation) {
                     case operations.loginGuest:
-                        let people = loginManager.createGuest(ip, data.name || 'Unknown', data.bio || '', data.gender || 1);
+                        let people = usersManager.createGuest(id, data.name || 'Unknown', data.bio || '', data.gender || 1);
                         if (people) {
                             socket.people = people;
                             console.log('success loginGuest : ' + people.name);
@@ -27,21 +27,21 @@ module.exports = {
 
         io.on('connection', socket => {
             let people = socket.people;
-            socket.join(people.key.ipv4)
+            socket.join(people.key.id)
             console.log('connected : ' + people.name);
 
-            let added = loginManager.addPeopleIfNotExist(people);
+            let added = usersManager.addPeopleIfNotExist(people);
             if (added) {
                 socket.emit('logged', people);
                 socket.broadcast.emit('userCame', people);
             }
 
             socket.on("disconnect", async () => {
-                let userId = socket.people.key.ipv4;
+                let userId = socket.people.key.id;
                 const matchingSockets = await io.in(userId).allSockets();
                 const isDisconnected = matchingSockets.size === 0;
                 if (isDisconnected) {
-                    loginManager.removePeople(userId);
+                    usersManager.peopleList.remove(userId);
                     socket.broadcast.emit("userLeft", userId);
                     console.log('disconnected : ' + people.name);
                 }
