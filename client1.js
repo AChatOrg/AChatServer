@@ -36,6 +36,8 @@ const recursiveAsyncReadLine = function () {
             case 'pp'://onlineUsers
                 socket.emit('people');
                 break;
+            case 'pv'://PV Message
+                break;
         }
         recursiveAsyncReadLine();
     });
@@ -55,15 +57,18 @@ socket.on('logged', user => {
 });
 
 socket.on('userCame', user => {
-    log('client/ userCame: ' + user.name + ' ' + user.key.id);
+    log('client/ userCame: ' + user.name + ' ' + user.key.uid);
 });
 
 socket.on('userLeft', userId => {
     log('client/ userLeft: ' + userId);
 });
-//----------------------------------------------------
 socket.on('people', people => {
     for (let p of people) {
         log(p.name);
     }
+});
+//----------------------------------------------------
+socket.on('pvMessage', message => {
+    log(message)
 });

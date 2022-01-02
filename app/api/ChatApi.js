@@ -2,10 +2,11 @@ const usersManager = require('../bl/usersManager')
 
 module.exports = {
     listen: function (socket) {
-        socket.on("pvMessage", message => {
+        socket.on("pvMessage", json => {
+            let message = JSON.parse(json)
             let receiver = usersManager.peopleList.get(message.receiverId);
             if (receiver) {
-                socket.to(receiver.key.id).to(socket.people.key.id).emit(message);
+                socket.to(receiver.key.uid).to(socket.people.key.uid).emit("pvMessage", message);
             }
         })
     }

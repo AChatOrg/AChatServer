@@ -1,37 +1,29 @@
 
 class Key {
-    constructor(id, rank, score, loginTime) {
-        this.id = id;
+    constructor(uid, rank, score, loginTime) {
+        this.uid = uid;
         this.rank = rank;
         this.score = score;
         this.loginTime = loginTime;
     }
 }
 
-class Avatar {
-    constructor(url, isOnline) {
-        this.url = url;
-        this.isOnline = isOnline;
-    }
-}
-
 class People {
 
-    constructor(name, bio, gender, avatarUrl, isOnline, id, rank, score, loginTime) {
+    constructor(name, bio, gender, avatars, uid, rank, score, loginTime) {
         this.name = name;
         this.bio = bio;
         this.gender = gender;
-        this.avatar = new Avatar(avatarUrl, isOnline);
-        this.key = new Key(id, rank, score, loginTime);
+        this.avatars = avatars;
+        this.key = new Key(uid, rank, score, loginTime);
     }
 
     update(newUser) {
         this.name = newUser.name;
         this.bio = newUser.bio;
         this.gender = newUser.gender;
-        this.avatar.avatarUrl = newUser.avatar.avatarUrl;
-        this.avatar.isOnline = newUser.avatar.isOnline;
-        this.key.id = newUser.key.id;
+        this.avatar = newUser.avatar;
+        this.key.uid = newUser.key.uid;
         this.key.rank = newUser.key.rank;
         this.key.score = newUser.key.score;
         this.key.loginTime = newUser.key.loginTime;

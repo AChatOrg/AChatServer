@@ -3,6 +3,7 @@ const { Server } = require("socket.io");
 const usersManager = require('../bl/usersManager')
 const operations = require('../config').operations;
 const peopleApi = require('./peopleApi');
+const chatApi = require('./chatApi');
 
 module.exports = {
     listen: function (server) {
@@ -11,10 +12,10 @@ module.exports = {
         io.use((socket, next) => {
             let data = JSON.parse(socket.handshake.query.data);
             if (data) {
-                let id = socket.handshake.address || socket.handshake.headers["x-real-ip"];
+                let uid = socket.handshake.address || socket.handshake.headers["x-real-ip"];
                 switch (data.operation) {
                     case operations.loginGuest:
-                        let people = usersManager.createGuest(id, data.name || 'Unknown', data.bio || '', data.gender || 1);
+                        let people = usersManager.createGuest(uid, data.name || 'Unknown', data.bio || '', data.gender || 1);
                         if (people) {
                             socket.people = people;
                             console.log('success loginGuest : ' + people.name);
@@ -27,7 +28,7 @@ module.exports = {
 
         io.on('connection', socket => {
             let people = socket.people;
-            socket.join(people.key.id)
+            socket.join(people.key.uid)
             console.log('connected : ' + people.name);
 
             let added = usersManager.addPeopleIfNotExist(people);
@@ -37,7 +38,7 @@ module.exports = {
             }
 
             socket.on("disconnect", async () => {
-                let userId = socket.people.key.id;
+                let userId = socket.people.key.uid;
                 const matchingSockets = await io.in(userId).allSockets();
                 const isDisconnected = matchingSockets.size === 0;
                 if (isDisconnected) {
@@ -48,6 +49,7 @@ module.exports = {
             });
 
             peopleApi.listen(socket);
+            chatApi.listen(socket);
         });
         // app.post('/register', (req, res) => {
         //     let body = req.body;

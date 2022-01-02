@@ -6,7 +6,7 @@ class Tree {
     constructor() {
         this.map = new Map();
         this.tree = createTree((userAKey, userBKey) => {
-            if (userAKey.id == userBKey.id
+            if (userAKey.uid == userBKey.uid
                 && userAKey.rank == userBKey.rank
                 && userAKey.score == userBKey.score
                 && userAKey.loginTime == userBKey.loginTime) return 0;
@@ -25,37 +25,37 @@ class Tree {
 
     add(user) {
         this.tree = this.tree.insert(user.key, user);
-        this.map.set(user.key.id, user.key);
+        this.map.set(user.key.uid, user.key);
     }
 
-    get(id) {
-        let key = this.map.get(id);
+    get(uid) {
+        let key = this.map.get(uid);
         if (key) {
             return this.tree.get(key);
         }
     }
 
-    remove(id) {
-        let key = this.map.get(id);
+    remove(uid) {
+        let key = this.map.get(uid);
         if (key) {
             this.tree = this.tree.remove(key);
-            this.map.delete(id);
+            this.map.delete(uid);
         }
     }
 
-    update(id, newUser) {
-        let oldUser = this.get(id);
+    update(uid, newUser) {
+        let oldUser = this.get(uid);
         if (oldUser) {
             oldUser.update(newUser);
-            this.map.delete(id);
-            this.map.set(newUser.key.id, newUser.key);
+            this.map.delete(uid);
+            this.map.set(newUser.key.uid, newUser.key);
         }
     }
 
-    exist(id) {
-        let hasKey = this.map.has(id);
+    exist(uid) {
+        let hasKey = this.map.has(uid);
         if (hasKey) {
-            let user = this.get(id);
+            let user = this.get(uid);
             if (user) return true;
         }
         return false;

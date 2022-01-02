@@ -1,5 +1,4 @@
 const UserModel = require('./schema/UserModel');
-const LoggedUser = require('../model/LoggedUser');
 
 module.exports = {
     save: function (user) {
@@ -18,18 +17,18 @@ module.exports = {
                 if (err)
                     reject(err);
                 else {
-                    let userResult = new LoggedUser(
-                        userSaved._id,
-                        userSaved.username,
-                        undefined,
-                        userSaved.name,
-                        userSaved.avatar,
-                        userSaved.bio,
-                        userSaved.gender,
-                        userSaved.score,
-                        userSaved.rank
-                    );
-                    resolve(userResult);
+                    // let userResult = new LoggedUser(
+                    //     userSaved._id,
+                    //     userSaved.username,
+                    //     undefined,
+                    //     userSaved.name,
+                    //     userSaved.avatar,
+                    //     userSaved.bio,
+                    //     userSaved.gender,
+                    //     userSaved.score,
+                    //     userSaved.rank
+                    // );
+                    // resolve(userResult);
                 }
             });
         });
