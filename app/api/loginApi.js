@@ -34,10 +34,11 @@ module.exports = {
             let added = usersManager.addPeopleIfNotExist(people);
             if (added) {
                 socket.emit(operations.ON_LOGGED, people);
-                socket.broadcast.emit('userCame', people);
+                socket.broadcast.emit(operations.ON_USER_CAME, people);
             }
 
             socket.on("disconnect", async () => {
+                console.log("diiiiiiiiiiiiiiiiiiiiiiiiissssssssssssss");
                 let user = socket.people
                 let userId = user.key.uid;
                 const matchingSockets = await io.in(userId).allSockets();

@@ -1,12 +1,12 @@
 const usersManager = require('../bl/usersManager')
 const operations = require('../config').operations;
-const { v4: uuidv4 } = require('uuid');
 
 module.exports = {
     listen: function (socket) {
         socket.on(operations.ON_PV_MESSAGE, json => {
             let message = JSON.parse(json)
 
+            message.senderUid = socket.people.key.uid
             message.time = Date.now()
             socket.emit(operations.ON_MESSAGE_SENT, message)
 
