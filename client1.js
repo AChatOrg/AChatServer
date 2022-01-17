@@ -37,6 +37,36 @@ const recursiveAsyncReadLine = function () {
                 socket.emit('people');
                 break;
             case 'pv'://PV Message
+                socket.emit('pvMessage',JSON.stringify({
+                    type: 'com.hyapp.achat.model.TextMessage',
+                    data: {
+                      ExtraTextSize: 0,
+                      text: 'فاطمه ',
+                      delivery: 2,
+                      receiverUid: '::ffff:192.168.1.102',
+                      sender: {
+                        id: 0,
+                        loginTime: 1641243758235,
+                        messageDelivery: 1,
+                        messageTime: 0,
+                        onlineTime: 0,
+                        rank: 6,
+                        score: 0,
+                        type: 1,
+                        uid: 'aaa',
+                        avatars: [],
+                        rankColor: -6381922,
+                        rankStrRes: 2131755064,
+                        bio: 'خواروبار فروش',
+                        gender: 1,
+                        name: 'hosein'
+                      },
+                      uid: 'e60fce46-88f4-4641-9325-c754d172585c',
+                      timeMillis: 1641243763343,
+                      transferType: 1,
+                      type: 0
+                    }
+                  }))
                 break;
         }
         recursiveAsyncReadLine();

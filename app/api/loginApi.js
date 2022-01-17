@@ -33,17 +33,18 @@ module.exports = {
 
             let added = usersManager.addPeopleIfNotExist(people);
             if (added) {
-                socket.emit('logged', people);
+                socket.emit(operations.ON_LOGGED, people);
                 socket.broadcast.emit('userCame', people);
             }
 
             socket.on("disconnect", async () => {
-                let userId = socket.people.key.uid;
+                let user = socket.people
+                let userId = user.key.uid;
                 const matchingSockets = await io.in(userId).allSockets();
                 const isDisconnected = matchingSockets.size === 0;
                 if (isDisconnected) {
                     usersManager.peopleList.remove(userId);
-                    socket.broadcast.emit("userLeft", userId);
+                    socket.broadcast.emit(operations.ON_USER_LEFT, user);
                     console.log('disconnected : ' + people.name);
                 }
             });
