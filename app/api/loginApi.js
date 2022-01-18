@@ -12,10 +12,10 @@ module.exports = {
         io.use((socket, next) => {
             let data = JSON.parse(socket.handshake.query.data);
             if (data) {
-                let uid = socket.handshake.address || socket.handshake.headers["x-real-ip"];
+                // let uid = socket.handshake.address || socket.handshake.headers["x-real-ip"];
                 switch (data.operation) {
                     case consts.loginGuest:
-                        let people = usersManager.createGuest(uid, data.name || 'Unknown', data.bio || '', data.gender || 1);
+                        let people = usersManager.createGuest(data.uid, data.name || 'Unknown', data.bio || '', data.gender || consts.GENDER_MALE);
                         if (people) {
                             socket.people = people;
                             console.log('success loginGuest : ' + people.name);

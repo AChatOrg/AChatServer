@@ -13,6 +13,7 @@ const consts = {
     ON_PV_MSG: 'pvMessage',
     ON_MSG_SENT: 'msgSent',
     ON_MSG_RECEIVED: 'msgReceived',
+    ON_MSG_READ: 'msgRead',
     /*MSG*/
     /*Delivery*/
     DELIVERY_HIDDEN: 1,

@@ -9,7 +9,7 @@ module.exports = {
 
             message.senderUid = socket.people.key.uid
             message.time = Date.now()
-            socket.emit(consts.ON_MSG_SENT, message)
+            socket.emit(consts.ON_MSG_SENT, message.uid)
 
             MessageDao.save(message)
 
@@ -21,6 +21,10 @@ module.exports = {
 
         socket.on(consts.ON_MSG_RECEIVED, uid => {
             MessageDao.delete(uid)
+        })
+
+        socket.on(consts.ON_MSG_READ, (uid, senderUid) => {
+            socket.to(senderUid).to(socket.people.key.uid).emit(consts.ON_MSG_READ, uid)
         })
     },
 
