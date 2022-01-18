@@ -1,18 +1,36 @@
 const usersManager = require('../bl/usersManager')
-const operations = require('../config').operations;
+const consts = require('../config').consts;
+const MessageDao = require('../da/MessageDao')
 
 module.exports = {
     listen: function (socket) {
-        socket.on(operations.ON_PV_MESSAGE, json => {
+        socket.on(consts.ON_PV_MSG, json => {
             let message = JSON.parse(json)
 
             message.senderUid = socket.people.key.uid
             message.time = Date.now()
-            socket.emit(operations.ON_MESSAGE_SENT, message)
+            socket.emit(consts.ON_MSG_SENT, message)
+
+            MessageDao.save(message)
 
             let receiver = usersManager.peopleList.get(message.receiverUid);
             if (receiver) {
-                socket.to(receiver.key.uid).to(socket.people.key.uid).emit(operations.ON_PV_MESSAGE, message);
+                socket.to(message.receiverUid).to(message.senderUid).emit(consts.ON_PV_MSG, message);
+            }
+        })
+
+        socket.on(consts.ON_MSG_RECEIVED, uid => {
+            MessageDao.delete(uid)
+        })
+    },
+
+    sendOfflineMessages: function (socket, receiverUid) {
+        MessageDao.find(receiverUid).then(messages => {
+            let receiver = usersManager.peopleList.get(receiverUid);
+            if (receiver) {
+                for (let message of messages) {
+                    socket.emit(consts.ON_PV_MSG, message);
+                }
             }
         })
     }

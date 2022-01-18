@@ -6,7 +6,7 @@ const peopleList = new PeopleList();
 
 //////////////////////////
 for (let i = 0; i < 10; i++) {
-    let user = new People("name " + i, "bio " + i, Math.random() < 0.5 ? 1 : 2, ['https://i.pravatar.cc/150?img='+Math.random()], i, Math.floor(Math.random() * (6 - 0 + 1) + 0), i, i);
+    let user = new People("name " + i, "bio " + i, Math.random() < 0.5 ? 1 : 2, ['https://i.pravatar.cc/150?img=' + Math.random()], i, Math.floor(Math.random() * (6 - 0 + 1) + 0), i, i);
     peopleList.add(user);
 }
 //////////////////////////
@@ -26,6 +26,10 @@ module.exports = {
         }
         peopleList.add(people);
         return true;
+    },
+
+    update: function (people) {
+        peopleList.update(people.key.uid, people)
     },
 
     register: function (user) {

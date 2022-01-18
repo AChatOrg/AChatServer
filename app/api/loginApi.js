@@ -1,7 +1,7 @@
 const { Server } = require("socket.io");
 
 const usersManager = require('../bl/usersManager')
-const operations = require('../config').operations;
+const consts = require('../config').consts;
 const peopleApi = require('./peopleApi');
 const chatApi = require('./chatApi');
 
@@ -14,7 +14,7 @@ module.exports = {
             if (data) {
                 let uid = socket.handshake.address || socket.handshake.headers["x-real-ip"];
                 switch (data.operation) {
-                    case operations.loginGuest:
+                    case consts.loginGuest:
                         let people = usersManager.createGuest(uid, data.name || 'Unknown', data.bio || '', data.gender || 1);
                         if (people) {
                             socket.people = people;
@@ -30,22 +30,23 @@ module.exports = {
             let people = socket.people;
             socket.join(people.key.uid)
             console.log('connected : ' + people.name);
+            
+            chatApi.sendOfflineMessages(socket, people.key.uid)
 
             let added = usersManager.addPeopleIfNotExist(people);
             if (added) {
-                socket.emit(operations.ON_LOGGED, people);
-                socket.broadcast.emit(operations.ON_USER_CAME, people);
+                socket.emit(consts.ON_LOGGED, people);
+                socket.broadcast.emit(consts.ON_USER_CAME, people);
             }
 
             socket.on("disconnect", async () => {
-                console.log("diiiiiiiiiiiiiiiiiiiiiiiiissssssssssssss");
                 let user = socket.people
                 let userId = user.key.uid;
                 const matchingSockets = await io.in(userId).allSockets();
                 const isDisconnected = matchingSockets.size === 0;
                 if (isDisconnected) {
                     usersManager.peopleList.remove(userId);
-                    socket.broadcast.emit(operations.ON_USER_LEFT, user);
+                    socket.broadcast.emit(consts.ON_USER_LEFT, user);
                     console.log('disconnected : ' + people.name);
                 }
             });

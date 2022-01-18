@@ -1,10 +1,10 @@
 const usersManager = require('../bl/usersManager')
-const operations = require('../config').operations;
+const consts = require('../config').consts;
 
 module.exports = {
     listen: function (socket) {
-        socket.on(operations.ON_USERS, () => {
-            socket.emit(operations.ON_USERS, usersManager.peopleList.list())
+        socket.on(consts.ON_USERS, () => {
+            socket.emit(consts.ON_USERS, usersManager.peopleList.list())
         })
     }
 };
