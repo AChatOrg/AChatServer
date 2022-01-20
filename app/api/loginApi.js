@@ -32,7 +32,8 @@ module.exports = {
             console.log('connected : ' + people.name);
             
             chatApi.sendOfflineMessages(socket, people.key.uid)
-
+            chatApi.sendOfflineRaeds(socket, people.key.uid)
+            
             let added = usersManager.addPeopleIfNotExist(people);
             if (added) {
                 socket.emit(consts.ON_LOGGED, people);

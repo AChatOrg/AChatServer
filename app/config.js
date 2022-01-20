@@ -14,6 +14,7 @@ const consts = {
     ON_MSG_SENT: 'msgSent',
     ON_MSG_RECEIVED: 'msgReceived',
     ON_MSG_READ: 'msgRead',
+    ON_MSG_READ_RECEIVED: 'msgReadReceived',
     /*MSG*/
     /*Delivery*/
     DELIVERY_HIDDEN: 1,
