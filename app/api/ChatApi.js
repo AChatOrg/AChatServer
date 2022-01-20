@@ -33,6 +33,11 @@ module.exports = {
         socket.on(consts.ON_MSG_READ_RECEIVED, uid => {
             ReadDao.delete(uid)
         })
+
+        socket.on(consts.ON_TYPING, receiverUid => {
+            let senderUid = socket.people.key.uid
+            socket.to(receiverUid).to(senderUid).emit(consts.ON_TYPING, senderUid)
+        })
     },
 
     sendOfflineMessages: function (socket, receiverUid) {
