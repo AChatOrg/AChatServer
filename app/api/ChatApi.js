@@ -8,13 +8,13 @@ module.exports = {
         socket.on(consts.ON_PV_MSG, json => {
             let message = JSON.parse(json)
 
-            message.senderUid = socket.people.key.uid
+            message.senderUid = socket.user.key.uid
             message.time = Date.now()
             socket.emit(consts.ON_MSG_SENT, message.uid)
 
             MessageDao.save(message).catch(err => { })
 
-            let receiver = usersManager.peopleList.get(message.receiverUid);
+            let receiver = usersManager.userList.get(message.receiverUid);
             if (receiver) {
                 socket.to(message.receiverUid).to(message.senderUid).emit(consts.ON_PV_MSG, message);
             }
@@ -27,7 +27,7 @@ module.exports = {
         socket.on(consts.ON_MSG_READ, (uid, receiverUid) => {
             socket.emit(consts.ON_MSG_READ_RECEIVED, uid)
             ReadDao.save(uid, receiverUid).catch(err => { })
-            socket.to(receiverUid).to(socket.people.key.uid).emit(consts.ON_MSG_READ, uid)
+            socket.to(receiverUid).to(socket.user.key.uid).emit(consts.ON_MSG_READ, uid)
         })
 
         socket.on(consts.ON_MSG_READ_RECEIVED, uid => {
@@ -35,14 +35,14 @@ module.exports = {
         })
 
         socket.on(consts.ON_TYPING, receiverUid => {
-            let senderUid = socket.people.key.uid
+            let senderUid = socket.user.key.uid
             socket.to(receiverUid).to(senderUid).emit(consts.ON_TYPING, senderUid)
         })
     },
 
     sendOfflineMessages: function (socket, receiverUid) {
         MessageDao.find(receiverUid).then(messages => {
-            let receiver = usersManager.peopleList.get(receiverUid);
+            let receiver = usersManager.userList.get(receiverUid);
             if (receiver) {
                 for (let message of messages) {
                     socket.emit(consts.ON_PV_MSG, message);
@@ -53,7 +53,7 @@ module.exports = {
 
     sendOfflineRaeds: function (socket, receiverUid) {
         ReadDao.find(receiverUid).then(reads => {
-            let receiver = usersManager.peopleList.get(receiverUid);
+            let receiver = usersManager.userList.get(receiverUid);
             if (receiver) {
                 for (let read of reads) {
                     socket.emit(consts.ON_MSG_READ, read.uid);

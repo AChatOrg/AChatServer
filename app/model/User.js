@@ -8,7 +8,7 @@ class Key {
     }
 }
 
-class People {
+class User {
 
     constructor(name, bio, gender, avatars, uid, rank, score, loginTime) {
         this.name = name;
@@ -30,4 +30,4 @@ class People {
     }
 }
 
-module.exports = { People, Key };
+module.exports = { User, Key };

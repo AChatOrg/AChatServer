@@ -34,7 +34,7 @@ const recursiveAsyncReadLine = function () {
                 break;
 
             case 'pp'://onlineUsers
-                socket.emit('people');
+                socket.emit('user');
                 break;
             case 'pv'://PV Message
                 socket.emit('pvMessage',JSON.stringify({
@@ -93,8 +93,8 @@ socket.on('userCame', user => {
 socket.on('userLeft', userId => {
     log('client/ userLeft: ' + userId);
 });
-socket.on('people', people => {
-    for (let p of people) {
+socket.on('user', user => {
+    for (let p of user) {
         log(p.name);
     }
 });

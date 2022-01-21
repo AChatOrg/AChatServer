@@ -1,36 +1,33 @@
 const UserModel = require('./schema/UserModel');
 
 module.exports = {
-    save: function (user) {
+    put: function (user) {
         return new Promise((resolve, reject) => {
-            let userDb = new UserModel({
-                username: user.username,
-                password: user.password,
-                name: user.name,
-                avatar: user.avatar,
-                bio: user.bio,
-                gender: user.gender,
-                score: user.score,
-                rank: user.rank
-            });
-            userDb.save((err, userSaved) => {
+            let query = { uid: user.key.uid },
+                update = {
+                    username: user.username,
+
+                    uid: user.key.uid,
+                    loginTime: user.key.loginTime,
+
+                    name: user.name,
+                    bio: user.bio,
+                    gender: user.gender,
+                    avatars: user.avatars,
+                    onlineTime: user.onlineTime
+                },
+                options = { upsert: true, new: true, setDefaultsOnInsert: true };
+
+            UserModel.findOneAndUpdate(query, update, options, (err, doc) => {
                 if (err)
-                    reject(err);
-                else {
-                    // let userResult = new LoggedUser(
-                    //     userSaved._id,
-                    //     userSaved.username,
-                    //     undefined,
-                    //     userSaved.name,
-                    //     userSaved.avatar,
-                    //     userSaved.bio,
-                    //     userSaved.gender,
-                    //     userSaved.score,
-                    //     userSaved.rank
-                    // );
-                    // resolve(userResult);
-                }
-            });
-        });
+                    reject(err)
+                else
+                    resolve(doc)
+            }).lean()
+        })
+    },
+
+    update: function (uid , user) {
+        UserModel.updateOne({ uid: uid }, user);
     }
 }

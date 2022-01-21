@@ -2,8 +2,9 @@ const { Server } = require("socket.io");
 
 const usersManager = require('../bl/usersManager')
 const consts = require('../config').consts;
-const peopleApi = require('./peopleApi');
+const userApi = require('./usersApi');
 const chatApi = require('./chatApi');
+const User = require('../model/User').User;
 
 module.exports = {
     listen: function (server) {
@@ -15,44 +16,55 @@ module.exports = {
                 // let uid = socket.handshake.address || socket.handshake.headers["x-real-ip"];
                 switch (data.operation) {
                     case consts.loginGuest:
-                        let people = usersManager.createGuest(data.uid, data.name || 'Unknown', data.bio || '', data.gender || consts.GENDER_MALE);
-                        if (people) {
-                            socket.people = people;
-                            console.log('success loginGuest : ' + people.name);
-                            return next();
-                        }
+                        let user = new User(data.name, data.bio, data.gender, [], data.uid, 0, 0, Date.now());
+                        user.username = user.key.uid;
+                        usersManager.putUser(user).then(userLogged => {
+                            socket.user = new User(userLogged.name, userLogged.bio, userLogged.gender,
+                                userLogged.avatars, userLogged.uid, userLogged.rank, userLogged.score,
+                                userLogged.loginTime)
+
+                            console.log('success loginGuest : ' + user.name);
+                            next();
+                        }).catch(err => {
+                            console.log(err);
+                            next(new Error(err));
+                        })
                         break;
                 }
             }
         })
 
         io.on('connection', socket => {
-            let people = socket.people;
-            socket.join(people.key.uid)
-            console.log('connected : ' + people.name);
-            
-            chatApi.sendOfflineMessages(socket, people.key.uid)
-            chatApi.sendOfflineRaeds(socket, people.key.uid)
-            
-            let added = usersManager.addPeopleIfNotExist(people);
+            let user = socket.user
+
+            socket.join(user.key.uid)
+            console.log('connected : ' + user.name);
+
+            chatApi.sendOfflineMessages(socket, user.key.uid)
+            chatApi.sendOfflineRaeds(socket, user.key.uid)
+
+            let added = usersManager.addUserIfNotExist(user);
             if (added) {
-                socket.emit(consts.ON_LOGGED, people);
-                socket.broadcast.emit(consts.ON_USER_CAME, people);
+                socket.emit(consts.ON_LOGGED, user);
+                socket.broadcast.emit(consts.ON_USER_CAME, user);
             }
 
             socket.on("disconnect", async () => {
-                let user = socket.people
+                let user = socket.user
                 let userId = user.key.uid;
                 const matchingSockets = await io.in(userId).allSockets();
                 const isDisconnected = matchingSockets.size === 0;
+
+                usersManager.updateUserOnlineTime(user.key.uid, { onlineTime: Date.now() })
+
                 if (isDisconnected) {
-                    usersManager.peopleList.remove(userId);
+                    usersManager.userList.remove(userId);
                     socket.broadcast.emit(consts.ON_USER_LEFT, user);
-                    console.log('disconnected : ' + people.name);
+                    console.log('disconnected : ' + user.name);
                 }
             });
 
-            peopleApi.listen(socket);
+            userApi.listen(socket);
             chatApi.listen(socket);
         });
         // app.post('/register', (req, res) => {

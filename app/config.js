@@ -8,7 +8,7 @@ const consts = {
     ON_USER_CAME: 'userCame',
     ON_USER_LEFT: 'userLeft',
     /*On Users*/
-    ON_USERS: 'people',
+    ON_USERS: 'users',
     /*On Chat*/
     ON_PV_MSG: 'pvMessage',
     ON_MSG_SENT: 'msgSent',
@@ -16,6 +16,7 @@ const consts = {
     ON_MSG_READ: 'msgRead',
     ON_MSG_READ_RECEIVED: 'msgReadReceived',
     ON_TYPING: 'typing',
+    ON_ONLINE_TIME: 'onlineTime',
     /*MSG*/
     /*Delivery*/
     DELIVERY_HIDDEN: 1,

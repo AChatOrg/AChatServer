@@ -1,35 +1,44 @@
 const UserDao = require('../da/UserDao');
-const PeopleList = require('../model/PeopleList');
-const People = require('../model/Poeple').People;
+const UserList = require('../model/UserList');
+const User = require('../model/User').User;
 
-const peopleList = new PeopleList();
+const userList = new UserList();
 
 //////////////////////////
 for (let i = 0; i < 10; i++) {
-    let user = new People("name " + i, "bio " + i, Math.random() < 0.5 ? 1 : 2, ['https://i.pravatar.cc/150?img=' + Math.random()], i, Math.floor(Math.random() * (6 - 0 + 1) + 0), i, i);
-    peopleList.add(user);
+    let user = new User("name " + i, "bio " + i, Math.random() < 0.5 ? 1 : 2, ['https://i.pravatar.cc/150?img=' + Math.random()], i, Math.floor(Math.random() * (6 - 0 + 1) + 0), i, i);
+    userList.add(user);
 }
 //////////////////////////
 
 module.exports = {
 
-    peopleList,
+    userList,
 
-    createGuest: function (uid, name, bio, gender) {
-        let people = new People(name, bio, gender, [], uid, 6, 0, Date.now());
-        return people;
+    putUser: function (user) {
+        return new Promise((resolve, reject) => {
+            UserDao.put(user).then(userResult => {
+                resolve(userResult);
+            }).catch(err => {
+                reject(err)
+            })
+        })
     },
 
-    addPeopleIfNotExist: function (people) {
-        if (peopleList.exist(people.key.uid)) {
+    updateUserOnlineTime: function (uid, user) {
+        UserDao.update(uid, user);
+    },
+
+    addUserIfNotExist: function (user) {
+        if (userList.exist(user.key.uid)) {
             return false;
         }
-        peopleList.add(people);
+        userList.add(user);
         return true;
     },
 
-    update: function (people) {
-        peopleList.update(people.key.uid, people)
+    update: function (user) {
+        userList.update(user.key.uid, user)
     },
 
     register: function (user) {
