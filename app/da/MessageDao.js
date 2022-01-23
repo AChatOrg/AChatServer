@@ -1,4 +1,4 @@
-const MessageModel = require('./schema/MessageModel');
+const MessageModel = require('./schema/MessageModel').MessageModel;
 
 module.exports = {
     save: function (message) {

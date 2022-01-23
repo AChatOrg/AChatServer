@@ -25,8 +25,14 @@ module.exports = {
         })
     },
 
-    updateUserOnlineTime: function (uid, user) {
-        UserDao.update(uid, user);
+    updateUser: function (user) {
+        return new Promise((resolve, reject)=>{
+            UserDao.update(user).then(userResult => {
+                resolve(userResult);
+            }).catch(err => {
+                reject(err)
+            })
+        })
     },
 
     addUserIfNotExist: function (user) {

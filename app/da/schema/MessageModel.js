@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const consts = require('../../config').consts;
 
-const MessageSchema = new mongoose.Schema({
-    uid: { type: String, required: true, index: true, unique: true },
+const messageSchema = new mongoose.Schema({
+    uid: { type: String, required: true, index: true},
     type: { type: Number, default: consts.MESSAGE_TYPE_TEXT },
     transfer: { type: Number, default: consts.TRANSFER_RECEIVE },
     time: { type: Number, default: 0 },
@@ -28,6 +28,6 @@ const MessageSchema = new mongoose.Schema({
     id: { type: Number, default: 0 }
 });
 
-const MessageModel = mongoose.model('Message', MessageSchema);
+const MessageModel = mongoose.model('Message', messageSchema);
 
-module.exports = MessageModel;
+module.exports = {MessageModel, messageSchema};

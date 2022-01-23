@@ -9,7 +9,7 @@ module.exports = {
 
         socket.on(consts.ON_ONLINE_TIME, isOnline => {
             let time = (isOnline ? 0 : Date.now())
-            usersManager.updateUserOnlineTime(socket.user.key.uid, { onlineTime: time })
+            usersManager.updateUser(socket.user.key.uid, { onlineTime: time })
             socket.broadcast.emit(consts.ON_ONLINE_TIME, socket.user.key.uid, time);
         })
     }

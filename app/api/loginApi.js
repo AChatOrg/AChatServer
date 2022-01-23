@@ -14,16 +14,36 @@ module.exports = {
             let data = JSON.parse(socket.handshake.query.data);
             if (data) {
                 // let uid = socket.handshake.address || socket.handshake.headers["x-real-ip"];
+                let user
                 switch (data.operation) {
                     case consts.loginGuest:
-                        let user = new User(data.name, data.bio, data.gender, [], data.uid, 0, 0, Date.now());
-                        user.username = user.key.uid;
+                        user = new User(data.name, data.bio, data.gender, [], data.uid, 0, 0, Date.now());
+                        user.androidId = data.androidId;
+                        user.username = user.androidId;
+                        user.offlineMessages = []
+                        user.offlineReadMessageUids = []
                         usersManager.putUser(user).then(userLogged => {
                             socket.user = new User(userLogged.name, userLogged.bio, userLogged.gender,
                                 userLogged.avatars, userLogged.uid, userLogged.rank, userLogged.score,
                                 userLogged.loginTime)
 
                             console.log('success loginGuest : ' + user.name);
+                            next();
+                        }).catch(err => {
+                            console.log(err);
+                            next(new Error(err));
+                        })
+                        break;
+                    case consts.reconnectGuest:
+                        user = new User(data.name, data.bio, data.gender, [], data.uid, 0, 0, Date.now());
+                        user.androidId = data.androidId;
+                        user.username = user.androidId;
+                        usersManager.updateUser(user).then(userLogged => {
+                            socket.user = new User(userLogged.name, userLogged.bio, userLogged.gender,
+                                userLogged.avatars, userLogged.uid, userLogged.rank, userLogged.score,
+                                userLogged.loginTime)
+
+                            console.log('success reconnectGuest : ' + user.name);
                             next();
                         }).catch(err => {
                             console.log(err);
@@ -41,7 +61,7 @@ module.exports = {
             console.log('connected : ' + user.name);
 
             chatApi.sendOfflineMessages(socket, user.key.uid)
-            chatApi.sendOfflineRaeds(socket, user.key.uid)
+            chatApi.sendOfflineMessageReads(socket, user.key.uid)
 
             let added = usersManager.addUserIfNotExist(user);
             if (added) {
@@ -55,7 +75,9 @@ module.exports = {
                 const matchingSockets = await io.in(userId).allSockets();
                 const isDisconnected = matchingSockets.size === 0;
 
-                usersManager.updateUserOnlineTime(user.key.uid, { onlineTime: Date.now() })
+                let time = Date.now();
+                usersManager.updateUser(user.key.uid, { onlineTime: time })
+                socket.broadcast.emit(consts.ON_ONLINE_TIME, socket.user.key.uid, time);
 
                 if (isDisconnected) {
                     usersManager.userList.remove(userId);

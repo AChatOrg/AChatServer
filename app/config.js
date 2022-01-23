@@ -2,6 +2,7 @@ const port = 24240;
 const mongodpServerUrl = 'mongodb://localhost/AChat';
 const consts = {
     loginGuest: 'loginGuest',
+    reconnectGuest: 'reconnectGuest',
     login: 'login',
     /*On login*/
     ON_LOGGED: 'logged',
