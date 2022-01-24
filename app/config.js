@@ -8,8 +8,11 @@ const consts = {
     ON_LOGGED: 'logged',
     ON_USER_CAME: 'userCame',
     ON_USER_LEFT: 'userLeft',
+    ON_ROOM_CREATE: 'roomCreate',
+    ON_ROOM_DELETE: 'roomDelete',
     /*On Users*/
     ON_USERS: 'users',
+    ON_ROOMS: 'rooms',
     /*On Chat*/
     ON_PV_MSG: 'pvMessage',
     ON_MSG_SENT: 'msgSent',

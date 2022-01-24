@@ -1,4 +1,5 @@
 const usersManager = require('../bl/usersManager')
+const roomsManager = require('../bl/roomsManager')
 const consts = require('../config').consts;
 const UserDao = require('../da/UserDao')
 const User = require('../model/User').User
@@ -22,6 +23,12 @@ module.exports = {
                     socket.emit(consts.ON_ONLINE_TIME_CONTACTS, result)
                 })
                 .catch(err => { console.log(err) })
+        })
+
+        //..................................................
+
+        socket.on(consts.ON_ROOMS, () => {
+            socket.emit(consts.ON_ROOMS, roomsManager.roomList.list())
         })
     }
 };

@@ -2,7 +2,7 @@ const { Server } = require("socket.io");
 
 const usersManager = require('../bl/usersManager')
 const consts = require('../config').consts;
-const userApi = require('./usersApi');
+const userApi = require('./usersRoomsApi');
 const chatApi = require('./chatApi');
 const User = require('../model/User').User;
 

@@ -22,7 +22,7 @@ class User {
         this.name = newUser.name;
         this.bio = newUser.bio;
         this.gender = newUser.gender;
-        this.avatar = newUser.avatar;
+        this.avatars = newUser.avatars;
         this.key.uid = newUser.key.uid;
         this.key.rank = newUser.key.rank;
         this.key.score = newUser.key.score;
