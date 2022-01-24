@@ -1,4 +1,3 @@
-const { log } = require('console');
 const UserModel = require('./schema/UserModel');
 
 module.exports = {
@@ -104,6 +103,17 @@ module.exports = {
                     reject(err);
                 else
                     resolve(userFound.offlineReadMessageUids);
+            })
+        })
+    },
+
+    findAllByUid: function (uidArray) {
+        return new Promise((resolve, reject) => {
+            UserModel.find({ uid: { $in: uidArray } }, (err, userList) => {
+                if (err)
+                    reject(err)
+                else
+                    resolve(userList)
             })
         })
     }

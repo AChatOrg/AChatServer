@@ -26,7 +26,7 @@ module.exports = {
                             socket.user = new User(userLogged.name, userLogged.bio, userLogged.gender,
                                 userLogged.avatars, userLogged.uid, userLogged.rank, userLogged.score,
                                 userLogged.loginTime)
-
+                            socket.user.androidId = userLogged.androidId;
                             console.log('success loginGuest : ' + user.name);
                             next();
                         }).catch(err => {
@@ -42,7 +42,7 @@ module.exports = {
                             socket.user = new User(userLogged.name, userLogged.bio, userLogged.gender,
                                 userLogged.avatars, userLogged.uid, userLogged.rank, userLogged.score,
                                 userLogged.loginTime)
-
+                            socket.user.androidId = userLogged.androidId;
                             console.log('success reconnectGuest : ' + user.name);
                             next();
                         }).catch(err => {

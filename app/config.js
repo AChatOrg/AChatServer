@@ -18,6 +18,7 @@ const consts = {
     ON_MSG_READ_RECEIVED: 'msgReadReceived',
     ON_TYPING: 'typing',
     ON_ONLINE_TIME: 'onlineTime',
+    ON_ONLINE_TIME_CONTACTS: 'onlineTimeContacts',
     /*MSG*/
     /*Delivery*/
     DELIVERY_HIDDEN: 1,
