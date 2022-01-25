@@ -86,7 +86,7 @@ module.exports = {
                 }
             });
 
-            userApi.listen(socket);
+            userApi.listen(io, socket);
             chatApi.listen(socket);
         });
         // app.post('/register', (req, res) => {

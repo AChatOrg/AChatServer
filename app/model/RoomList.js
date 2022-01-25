@@ -10,6 +10,9 @@ class Tree {
                 && roomAKey.memberCount == roomBKey.memberCount) return 0;
             if (roomAKey.memberCount < roomBKey.memberCount) return 1;
             if (roomAKey.memberCount > roomBKey.memberCount) return -1;
+            if (roomAKey.createTime < roomBKey.createTime) return -1;
+            if (roomAKey.createTime > roomBKey.createTime) return 1;
+            return 0;
         });
     }
 

@@ -2,10 +2,9 @@ const usersManager = require('../bl/usersManager')
 const roomsManager = require('../bl/roomsManager')
 const consts = require('../config').consts;
 const UserDao = require('../da/UserDao')
-const RoomDao = require('../da/RoomDao')
 
 module.exports = {
-    listen: function (socket) {
+    listen: function (io, socket) {
         socket.on(consts.ON_USERS, () => {
             socket.emit(consts.ON_USERS, usersManager.userList.list())
         })
@@ -29,6 +28,17 @@ module.exports = {
 
         socket.on(consts.ON_ROOMS, () => {
             socket.emit(consts.ON_ROOMS, roomsManager.roomList.list())
+        })
+
+        socket.on(consts.ON_CREATE_ROOM, jsonRoom => {
+            let room = JSON.parse(jsonRoom)
+            roomsManager.createRoom(room, socket.user).then(createdRoom => {
+                socket.emit(consts.ON_CREATE_ROOM, true);
+                io.emit(consts.ON_ROOM_CREATE, createdRoom);
+            }).catch(err => {
+                console.log(err)
+                socket.emit(consts.ON_CREATE_ROOM, false);
+            })
         })
     }
 };

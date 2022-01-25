@@ -8,6 +8,8 @@ module.exports = {
                 $set: { members: members },
 
                 uid: room.key.uid,
+                createTime: room.key.createTime,
+                
                 name: room.name,
                 gender: room.gender,
                 avatars: room.avatars
@@ -94,35 +96,43 @@ module.exports = {
 
     addOfflineMessage: function (message) {
         RoomModel.findOne({ uid: message.receiverUid }, (err, room) => {
-            for (user of room.members) {
-                if (user.uid != message.senderUid)
-                    UserDao.addOfflineMessage(user.uid, message);
-            }
+            if (err) console.log(err)
+            else
+                for (user of room.members) {
+                    if (user.uid != message.senderUid)
+                        UserDao.addOfflineMessage(user.uid, message);
+                }
         })
     },
 
     addOfflineReadMessageUid: function (roomUid, messageUid, senderUid) {
         RoomModel.findOne({ uid: roomUid }, (err, room) => {
-            for (user of room.members) {
-                if (user.uid != senderUid)
-                    UserDao.addOfflineReadMessageUid(user.uid, messageUid);
-            }
+            if (err) console.log(err)
+            else
+                for (user of room.members) {
+                    if (user.uid != senderUid)
+                        UserDao.addOfflineReadMessageUid(user.uid, messageUid);
+                }
         })
     },
 
     removeOfflineMessage: function (roomUid, messageUid) {
         RoomModel.findOne({ uid: roomUid }, (err, room) => {
-            for (user of room.members) {
-                UserDao.removeOfflineMessage(user.uid, messageUid);
-            }
+            if (err) console.log(err)
+            else
+                for (user of room.members) {
+                    UserDao.removeOfflineMessage(user.uid, messageUid);
+                }
         })
     },
 
     removeOfflineReadMessageUid: function (roomUid, messageUid) {
         RoomModel.findOne({ uid: roomUid }, (err, room) => {
-            for (user of room.members) {
-                UserDao.removeOfflineReadMessageUid(user.uid, messageUid);
-            }
+            if (err) console.log(err)
+            else
+                for (user of room.members) {
+                    UserDao.removeOfflineReadMessageUid(user.uid, messageUid);
+                }
         })
     },
 }

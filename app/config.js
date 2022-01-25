@@ -16,6 +16,7 @@ const consts = {
     /*On Users*/
     ON_USERS: 'users',
     ON_ROOMS: 'rooms',
+    ON_CREATE_ROOM: "createRoom",
     /*On Pv Chat*/
     ON_MSG: 'message',
     ON_MSG_SENT: 'msgSent',

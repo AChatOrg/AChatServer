@@ -2,10 +2,12 @@ const mongoose = require('mongoose');
 const userSchema = require('./UserModel').userSchema
 
 const RoomSchema = new mongoose.Schema({
-    uid: { type: String, required: true, index: true, unique: true },
     name: { type: String, required: true },
     gender: { type: Number, required: true },
     avatars: { type: [String] },
+
+    uid: { type: String, required: true, index: true },
+    createTime: { type: Number },
 
     members: [userSchema],
 

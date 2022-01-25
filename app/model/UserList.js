@@ -16,6 +16,7 @@ class Tree {
             if (userAKey.score > userBKey.score) return -1;
             if (userAKey.loginTime < userBKey.loginTime) return -1;
             if (userAKey.loginTime > userBKey.loginTime) return 1;
+            return 0;
         });
     }
 
