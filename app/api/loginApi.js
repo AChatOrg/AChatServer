@@ -22,6 +22,7 @@ module.exports = {
                         user.username = user.androidId;
                         user.offlineMessages = []
                         user.offlineReadMessageUids = []
+                        user.roomUids = []
                         usersManager.putUser(user).then(userLogged => {
                             socket.user = new User(userLogged.name, userLogged.bio, userLogged.gender,
                                 userLogged.avatars, userLogged.uid, userLogged.rank, userLogged.score,
@@ -60,8 +61,7 @@ module.exports = {
             socket.join(user.key.uid)
             console.log('connected : ' + user.name);
 
-            chatApi.sendOfflineMessages(socket, user.key.uid)
-            chatApi.sendOfflineMessageReads(socket, user.key.uid)
+            chatApi.sendOfflines(socket, user.key.uid)
 
             let added = usersManager.addUserIfNotExist(user);
             if (added) {

@@ -1,4 +1,4 @@
-const UserModel = require('./schema/UserModel');
+const UserModel = require('./schema/UserModel').UserModel;
 
 module.exports = {
     put: function (user) {
@@ -19,7 +19,8 @@ module.exports = {
 
                     $set: {
                         offlineMessages: user.offlineMessages,
-                        offlineReadMessageUids: user.offlineReadMessageUids
+                        offlineReadMessageUids: user.offlineReadMessageUids,
+                        roomUids: user.roomUids
                     }
                 },
                 options = {
@@ -49,8 +50,8 @@ module.exports = {
         })
     },
 
-    addOfflineMessage: function (message) {
-        let query = { uid: message.receiverUid },
+    addOfflineMessage: function (receiverUid, message) {
+        let query = { uid: receiverUid },
             update = {
                 $push: { offlineMessages: message },
             };
@@ -67,13 +68,13 @@ module.exports = {
         UserModel.findOneAndUpdate(query, update, (err, res) => { })
     },
 
-    getOfflineMessages: function (receiverUid) {
+    find: function (receiverUid) {
         return new Promise((resolve, reject) => {
             UserModel.findOne({ uid: receiverUid }, (err, userFound) => {
                 if (err)
                     reject(err);
                 else
-                    resolve(userFound.offlineMessages);
+                    resolve(userFound);
             })
         })
     },
@@ -96,16 +97,16 @@ module.exports = {
         UserModel.findOneAndUpdate(query, update, (err, res) => { })
     },
 
-    getOfflineReadMessageUids: function (receiverUid) {
-        return new Promise((resolve, reject) => {
-            UserModel.findOne({ uid: receiverUid }, (err, userFound) => {
-                if (err)
-                    reject(err);
-                else
-                    resolve(userFound.offlineReadMessageUids);
-            })
-        })
-    },
+    // getOfflineReadMessageUids: function (receiverUid) {
+    //     return new Promise((resolve, reject) => {
+    //         UserModel.findOne({ uid: receiverUid }, (err, userFound) => {
+    //             if (err)
+    //                 reject(err);
+    //             else
+    //                 resolve(userFound.offlineReadMessageUids);
+    //         })
+    //     })
+    // },
 
     findAllByUid: function (uidArray) {
         return new Promise((resolve, reject) => {
@@ -116,5 +117,25 @@ module.exports = {
                     resolve(userList)
             })
         })
-    }
+    },
+
+    addRoomUidIfNotExist: function (userUid, roomUid) {
+        UserModel.findOne({ uid: userUid }, (err, userFound) => {
+            if (!err && userFound) {
+                if (!userFound.roomUids.includes(roomUid)) {
+                    userFound.roomUids.push(roomUid)
+                    userFound.save()
+                }
+            }
+        })
+    },
+
+    removeRoomUid: function (userUid, roomUid) {
+        let query = { uid: userUid },
+            update = {
+                $pull: { roomUid: roomUid },
+            };
+
+        UserModel.findOneAndUpdate(query, update, (err, res) => { })
+    },
 }

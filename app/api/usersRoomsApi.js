@@ -2,7 +2,7 @@ const usersManager = require('../bl/usersManager')
 const roomsManager = require('../bl/roomsManager')
 const consts = require('../config').consts;
 const UserDao = require('../da/UserDao')
-const User = require('../model/User').User
+const RoomDao = require('../da/RoomDao')
 
 module.exports = {
     listen: function (socket) {

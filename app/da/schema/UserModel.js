@@ -18,13 +18,15 @@ const userSchema = new mongoose.Schema({
     avatars: { type: [String] },
     onlineTime: { type: Number, default: 0 },
 
-    offlineMessages:[messageSchema],
+    offlineMessages: [messageSchema],
 
-    offlineReadMessageUids:[{ type: String, required: true, index: true }],
+    offlineReadMessageUids: [{ type: String, required: true, index: true }],
+
+    roomUids: [{ type: String, index: true}]
 }, {
     timestamps: true
 });
 
 const UserModel = mongoose.model('User', userSchema);
 
-module.exports = UserModel;
+module.exports = {UserModel, userSchema};

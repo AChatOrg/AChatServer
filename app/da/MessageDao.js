@@ -24,6 +24,8 @@ module.exports = {
                 senderAvatars: message.senderAvatars,
                 senderOnlineTime: message.senderOnlineTime,
 
+                chatType: message.chatType,
+
                 delivery: message.delivery,
                 bubble: message.bubble,
 

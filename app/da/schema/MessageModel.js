@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const consts = require('../../config').consts;
 
 const messageSchema = new mongoose.Schema({
-    uid: { type: String, required: true, index: true},
+    uid: { type: String, required: true, index: true },
     type: { type: Number, default: consts.MESSAGE_TYPE_TEXT },
     transfer: { type: Number, default: consts.TRANSFER_RECEIVE },
     time: { type: Number, default: 0 },
@@ -22,6 +22,8 @@ const messageSchema = new mongoose.Schema({
     senderAvatars: { type: [String] },
     senderOnlineTime: { type: Number, default: consts.TIME_ONLINE },
 
+    chatType: { type: Number, default: consts.CHAT_TYPE_PV },
+
     delivery: { type: Number, default: consts.DELIVERY_WAITING },
     bubble: { type: Number, default: consts.BUBBLE_SINGLE },
 
@@ -30,4 +32,4 @@ const messageSchema = new mongoose.Schema({
 
 const MessageModel = mongoose.model('Message', messageSchema);
 
-module.exports = {MessageModel, messageSchema};
+module.exports = { MessageModel, messageSchema };

@@ -1,6 +1,9 @@
 const port = 24240;
 const mongodpServerUrl = 'mongodb://localhost/AChat';
 const consts = {
+    /*Rooms*/
+    MAIN_ROOM_UID: "main",
+    /*operation*/
     loginGuest: 'loginGuest',
     reconnectGuest: 'reconnectGuest',
     login: 'login',
@@ -13,8 +16,8 @@ const consts = {
     /*On Users*/
     ON_USERS: 'users',
     ON_ROOMS: 'rooms',
-    /*On Chat*/
-    ON_PV_MSG: 'pvMessage',
+    /*On Pv Chat*/
+    ON_MSG: 'message',
     ON_MSG_SENT: 'msgSent',
     ON_MSG_RECEIVED: 'msgReceived',
     ON_MSG_READ: 'msgRead',
@@ -22,6 +25,8 @@ const consts = {
     ON_TYPING: 'typing',
     ON_ONLINE_TIME: 'onlineTime',
     ON_ONLINE_TIME_CONTACTS: 'onlineTimeContacts',
+    /*On Room Chat*/
+    ON_JOIN_LEAVE_ROOM: "joinLeaveRoom",
     /*MSG*/
     /*Delivery*/
     DELIVERY_HIDDEN: 1,
@@ -46,6 +51,9 @@ const consts = {
     MSG_TYPE_DETAILS: 12,
     MSG_TYPE_PROFILE: 14,
     MSG_TYPE_LOTTIE: 16,
+
+    CHAT_TYPE_PV: 1,
+    CHAT_TYPE_ROOM: 2,
     /*User*/
     GENDER_MALE: 1,
     GENDER_FEMALE: 2,
