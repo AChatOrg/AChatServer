@@ -5,6 +5,6 @@ const ReadSchema = new mongoose.Schema({
     receiverUid: { type: String, required: true },
 });
 
-const RaedModel = mongoose.model('Read', ReadSchema);
+// const RaedModel = mongoose.model('Read', ReadSchema);
 
-module.exports = RaedModel;
+// module.exports = RaedModel;

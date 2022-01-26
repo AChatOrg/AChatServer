@@ -28,6 +28,8 @@ module.exports = {
                                 userLogged.avatars, userLogged.uid, userLogged.rank, userLogged.score,
                                 userLogged.loginTime)
                             socket.user.androidId = userLogged.androidId;
+                            socket.user.username = userLogged.username;
+                            socket.user.onlineTime = userLogged.onlineTime;
                             console.log('success loginGuest : ' + user.name);
                             next();
                         }).catch(err => {
@@ -44,6 +46,8 @@ module.exports = {
                                 userLogged.avatars, userLogged.uid, userLogged.rank, userLogged.score,
                                 userLogged.loginTime)
                             socket.user.androidId = userLogged.androidId;
+                            socket.user.username = userLogged.username;
+                            socket.user.onlineTime = userLogged.onlineTime;
                             console.log('success reconnectGuest : ' + user.name);
                             next();
                         }).catch(err => {

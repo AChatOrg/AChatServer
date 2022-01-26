@@ -12,7 +12,8 @@ module.exports = {
                 
                 name: room.name,
                 gender: room.gender,
-                avatars: room.avatars
+                avatars: room.avatars,
+                isPv : room.isPv
             },
                 options = {
                     upsert: true,

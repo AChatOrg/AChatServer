@@ -9,6 +9,7 @@ const consts = {
     login: 'login',
     /*On login*/
     ON_LOGGED: 'logged',
+    ON_LOGOUT: 'logout',
     ON_USER_CAME: 'userCame',
     ON_USER_LEFT: 'userLeft',
     ON_ROOM_CREATE: 'roomCreate',
@@ -55,6 +56,7 @@ const consts = {
 
     CHAT_TYPE_PV: 1,
     CHAT_TYPE_ROOM: 2,
+    CHAT_TYPE_PV_ROOM: 3,
     /*User*/
     GENDER_MALE: 1,
     GENDER_FEMALE: 2,

@@ -30,6 +30,6 @@ const messageSchema = new mongoose.Schema({
     id: { type: Number, default: 0 }
 });
 
-const MessageModel = mongoose.model('Message', messageSchema);
+// const MessageModel = mongoose.model('Message', messageSchema);
 
-module.exports = { MessageModel, messageSchema };
+module.exports = { /*MessageModel,*/ messageSchema };

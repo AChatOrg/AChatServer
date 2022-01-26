@@ -9,11 +9,12 @@ class Key {
 }
 
 class Room {
-    constructor(uid, memberCount, createTime, name, onlineMemberCount, gender, avatars) {
+    constructor(uid, memberCount, createTime, name, onlineMemberCount, gender, avatars, isPv) {
         this.name = name;
         this.onlineMemberCount = onlineMemberCount;
         this.gender = gender;
         this.avatars = avatars;
+        this.isPv = isPv
         this.key = new Key(uid, memberCount, createTime)
     }
 

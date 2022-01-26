@@ -24,6 +24,12 @@ module.exports = {
             } else if (message.chatType == consts.CHAT_TYPE_ROOM) {
                 let room = roomsManager.roomList.get(message.receiverUid);
                 if (room && (room.gender == consts.GENDER_MIXED || (room.gender == socket.user.gender))) {
+                    UserDao.addRoomUidIfNotExist(message.senderUid, message.receiverUid)
+                    socket.to(message.receiverUid).emit(consts.ON_MSG, message);
+                }
+            } else if (message.chatType == consts.CHAT_TYPE_PRIVATE_ROOM) {
+                let room = roomsManager.roomList.get(message.receiverUid);
+                if (room && (room.gender == consts.GENDER_MIXED || (room.gender == socket.user.gender))) {
                     RoomDao.addMemberIfNotExist(message.receiverUid, socket.user)
                     UserDao.addRoomUidIfNotExist(message.senderUid, message.receiverUid)
                     RoomDao.addOfflineMessage(message)
@@ -32,32 +38,34 @@ module.exports = {
             }
         })
 
-        socket.on(consts.ON_MSG_RECEIVED, (uid, isPvMessage, receiverUid) => {
+        socket.on(consts.ON_MSG_RECEIVED, (uid, chatType, receiverUid) => {
             // MessageDao.delete(uid)
-            if (isPvMessage) {
+            if (chatType == consts.CHAT_TYPE_PV) {
                 UserDao.removeOfflineMessage(socket.user.key.uid, uid)
-            } else {
+            } else if (chatType == consts.CHAT_TYPE_PV_ROOM) {
                 RoomDao.removeOfflineMessage(receiverUid, uid)
             }
         })
 
-        socket.on(consts.ON_MSG_READ, (uid, receiverUid, isPvMessage) => {
+        socket.on(consts.ON_MSG_READ, (uid, receiverUid, chatType) => {
             socket.emit(consts.ON_MSG_READ_RECEIVED, uid)
             // ReadDao.save(uid, receiverUid).catch(err => { })
-            if (isPvMessage) {
+            if (chatType == consts.CHAT_TYPE_PV) {
                 UserDao.addOfflineReadMessageUid(receiverUid, uid)
                 socket.to(receiverUid).to(socket.user.key.uid).emit(consts.ON_MSG_READ, uid)
             } else {
-                RoomDao.addOfflineReadMessageUid(receiverUid, uid, socket.user.key.uid)
+                if (chatType == consts.CHAT_TYPE_PV_ROOM) {
+                    RoomDao.addOfflineReadMessageUid(receiverUid, uid, socket.user.key.uid)
+                }
                 socket.to(receiverUid).emit(consts.ON_MSG_READ, uid)
             }
         })
 
-        socket.on(consts.ON_MSG_READ_RECEIVED, (uid, isPvMessage, receiverUid) => {
+        socket.on(consts.ON_MSG_READ_RECEIVED, (uid, chatType, receiverUid) => {
             // ReadDao.delete(uid)
-            if (isPvMessage) {
+            if (chatType == consts.CHAT_TYPE_PV) {
                 UserDao.removeOfflineReadMessageUid(socket.user.key.uid, uid)
-            } else {
+            } else if (chatType == consts.CHAT_TYPE_PV_ROOM) {
                 RoomDao.removeOfflineReadMessageUid(receiverUid, uid)
             }
         })

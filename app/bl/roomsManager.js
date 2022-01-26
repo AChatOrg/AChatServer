@@ -5,15 +5,17 @@ const RoomDao = require('../da/RoomDao')
 const uuidv4 = require('uuid').v4
 
 const roomList = new RoomList();
-const mainRoom = new Room(consts.MAIN_ROOM_UID, 1000, 0, "اتاق اصلی", 100, consts.GENDER_MIXED, ['https://i.pravatar.cc/150?img=' + Math.random(), 'https://i.pravatar.cc/150?img=' + Math.random(), 'https://i.pravatar.cc/150?img=' + Math.random()])
+const mainRoom = new Room(consts.MAIN_ROOM_UID, 1000, 0, "اتاق اصلی", 100, consts.GENDER_MIXED, ['https://i.pravatar.cc/150?img=' + Math.random(), 'https://i.pravatar.cc/150?img=' + Math.random(), 'https://i.pravatar.cc/150?img=' + Math.random()], false)
 
 //////////////////////////
-RoomDao.put(mainRoom).catch(err => { console.log(err); })
-RoomDao.findAll().then(rooms => {
-    for (r of rooms) {
-        let room = new Room(r.uid, r.members.length, r.createTime, r.name, 0, r.gender, r.avatars);
-        roomList.add(room);
-    }
+RoomDao.put(mainRoom).then(roomPuted => {
+    RoomDao.findAll().then(rooms => {
+        for (r of rooms) {
+            let room = new Room(r.uid, r.members.length, r.createTime, r.name, 0, r.gender, r.avatars, false);
+            roomList.add(room);
+        }
+    })
+        .catch(err => { console.log(err); })
 })
     .catch(err => { console.log(err); })
 //////////////////////////
@@ -38,9 +40,9 @@ module.exports = {
                     avatars: user.avatars,
                     onlineTime: user.onlineTime
                 }
-                let rom = new Room(uuidv4(), 1, Date.now(), room.name, 1, room.gender, room.avatars)
+                let rom = new Room(uuidv4(), 1, Date.now(), room.name, 1, room.gender, room.avatars, false)
                 RoomDao.put(rom, [u]).then(r => {
-                    let createdRoom = new Room(r.uid, r.members.length, r.createTime, r.name, 1, r.gender, r.avatars);
+                    let createdRoom = new Room(r.uid, r.members.length, r.createTime, r.name, 1, r.gender, r.avatars, false);
                     roomList.add(createdRoom)
                     resolve(createdRoom);
                 })
