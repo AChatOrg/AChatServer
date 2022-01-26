@@ -49,6 +49,15 @@ class Tree {
         }
     }
 
+    updateMemberCount(uid, memberCount) {
+        let oldRoom = this.get(uid);
+        if (oldRoom) {
+            oldRoom.key.memberCount = memberCount;
+            this.map.delete(uid);
+            this.map.set(uid, oldRoom.key);
+        }
+    }
+
     exist(uid) {
         let hasKey = this.map.has(uid);
         if (hasKey) {

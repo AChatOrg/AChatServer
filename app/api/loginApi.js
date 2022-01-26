@@ -91,7 +91,7 @@ module.exports = {
             });
 
             userApi.listen(io, socket);
-            chatApi.listen(socket);
+            chatApi.listen(io, socket);
         });
         // app.post('/register', (req, res) => {
         //     let body = req.body;

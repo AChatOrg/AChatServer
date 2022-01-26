@@ -9,11 +9,11 @@ module.exports = {
 
                 uid: room.key.uid,
                 createTime: room.key.createTime,
-                
+
                 name: room.name,
                 gender: room.gender,
                 avatars: room.avatars,
-                isPv : room.isPv
+                isPv: room.isPv
             },
                 options = {
                     upsert: true,
@@ -90,6 +90,18 @@ module.exports = {
                     }
                     roomFound.members.push(u)
                     roomFound.save()
+                }
+            }
+        })
+    },
+
+    addMemberUidIfNotExist: function (roomUid, userUid, onAdded) {
+        RoomModel.findOne({ uid: roomUid }, (err, roomFound) => {
+            if (!err && roomFound) {
+                if (!roomFound.memberUids.some(uid => uid == userUid)) {
+                    roomFound.memberUids.push(userUid)
+                    roomFound.save()
+                    onAdded(roomFound.memberUids.length)
                 }
             }
         })

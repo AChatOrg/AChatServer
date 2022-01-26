@@ -5,7 +5,7 @@ const RoomDao = require('../da/RoomDao')
 const UserDao = require('../da/UserDao')
 
 module.exports = {
-    listen: function (socket) {
+    listen: function (io, socket) {
         socket.on(consts.ON_MSG, json => {
             let message = JSON.parse(json)
 
@@ -25,6 +25,10 @@ module.exports = {
                 let room = roomsManager.roomList.get(message.receiverUid);
                 if (room && (room.gender == consts.GENDER_MIXED || (room.gender == socket.user.gender))) {
                     UserDao.addRoomUidIfNotExist(message.senderUid, message.receiverUid)
+                    RoomDao.addMemberUidIfNotExist(message.receiverUid, socket.user.key.uid, (memberCount=>{
+                        io.emit(consts.ON_ROOM_MEMBER_ADDED, message.receiverUid, memberCount, socket.user.name);
+                        roomsManager.updateMemberCount(message.receiverUid, memberCount);
+                    }))
                     socket.to(message.receiverUid).emit(consts.ON_MSG, message);
                 }
             } else if (message.chatType == consts.CHAT_TYPE_PRIVATE_ROOM) {

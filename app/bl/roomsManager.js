@@ -11,7 +11,7 @@ const mainRoom = new Room(consts.MAIN_ROOM_UID, 1000, 0, "اتاق اصلی", 10
 RoomDao.put(mainRoom).then(roomPuted => {
     RoomDao.findAll().then(rooms => {
         for (r of rooms) {
-            let room = new Room(r.uid, r.members.length, r.createTime, r.name, 0, r.gender, r.avatars, false);
+            let room = new Room(r.uid, r.memberUids.length, r.createTime, r.name, 0, r.gender, r.avatars, false);
             roomList.add(room);
         }
     })
@@ -49,5 +49,9 @@ module.exports = {
                     .catch(err => reject(err));
             } else reject()
         })
+    },
+
+    updateMemberCount: function (roomUid, memberCount) {
+        roomList.updateMemberCount(roomUid, memberCount);
     }
 }

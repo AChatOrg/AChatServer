@@ -13,6 +13,7 @@ const RoomSchema = new mongoose.Schema({
 
     members: [userSchema],
 
+    memberUids: [String]
 }, {
     timestamps: true
 });
