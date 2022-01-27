@@ -52,6 +52,10 @@ module.exports = {
     },
 
     updateMemberCount: function (roomUid, memberCount) {
-        roomList.updateMemberCount(roomUid, memberCount);
+        return roomList.updateMemberCount(roomUid, memberCount);
+    },
+
+    getRoom: function(roomUid){
+        return roomList.get(roomUid);
     }
 }

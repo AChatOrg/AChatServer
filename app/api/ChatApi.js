@@ -11,9 +11,9 @@ module.exports = {
 
             message.senderUid = socket.user.key.uid
             message.time = Date.now()
-            socket.emit(consts.ON_MSG_SENT, message.uid)
 
             if (message.chatType == consts.CHAT_TYPE_PV) {
+                socket.emit(consts.ON_MSG_SENT, message.uid)
                 // MessageDao.save(message).catch(err => { })
                 UserDao.addOfflineMessage(message.receiverUid, message)
 
@@ -25,13 +25,17 @@ module.exports = {
                 let room = roomsManager.roomList.get(message.receiverUid);
                 if (room && (room.gender == consts.GENDER_MIXED || (room.gender == socket.user.gender))) {
                     UserDao.addRoomUidIfNotExist(message.senderUid, message.receiverUid)
-                    RoomDao.addMemberUidIfNotExist(message.receiverUid, socket.user.key.uid, (memberCount=>{
-                        io.emit(consts.ON_ROOM_MEMBER_ADDED, message.receiverUid, memberCount, socket.user.name);
-                        roomsManager.updateMemberCount(message.receiverUid, memberCount);
+                    RoomDao.addMemberUidIfNotExist(message.receiverUid, socket.user.key.uid, (memberCount => {
+                        let onlineMemberCount =
+                            roomsManager.updateMemberCount(message.receiverUid, memberCount).onlineMemberCount;
+                        io.emit(consts.ON_ROOM_MEMBER_ADDED,
+                            message.receiverUid, memberCount,
+                            socket.user.name, onlineMemberCount);
                     }))
                     socket.to(message.receiverUid).emit(consts.ON_MSG, message);
                 }
-            } else if (message.chatType == consts.CHAT_TYPE_PRIVATE_ROOM) {
+            } else if (message.chatType == consts.CHAT_TYPE_PV_ROOM) {
+                socket.emit(consts.ON_MSG_SENT, message.uid)
                 let room = roomsManager.roomList.get(message.receiverUid);
                 if (room && (room.gender == consts.GENDER_MIXED || (room.gender == socket.user.gender))) {
                     RoomDao.addMemberIfNotExist(message.receiverUid, socket.user)
@@ -52,13 +56,14 @@ module.exports = {
         })
 
         socket.on(consts.ON_MSG_READ, (uid, receiverUid, chatType) => {
-            socket.emit(consts.ON_MSG_READ_RECEIVED, uid)
             // ReadDao.save(uid, receiverUid).catch(err => { })
             if (chatType == consts.CHAT_TYPE_PV) {
+                socket.emit(consts.ON_MSG_READ_RECEIVED, uid)
                 UserDao.addOfflineReadMessageUid(receiverUid, uid)
                 socket.to(receiverUid).to(socket.user.key.uid).emit(consts.ON_MSG_READ, uid)
             } else {
                 if (chatType == consts.CHAT_TYPE_PV_ROOM) {
+                    socket.emit(consts.ON_MSG_READ_RECEIVED, uid)
                     RoomDao.addOfflineReadMessageUid(receiverUid, uid, socket.user.key.uid)
                 }
                 socket.to(receiverUid).emit(consts.ON_MSG_READ, uid)
@@ -74,11 +79,11 @@ module.exports = {
             }
         })
 
-        socket.on(consts.ON_TYPING, (receiverUid, isRoom) => {
-            let senderUid = socket.user.key.uid
-            if (isRoom) {
+        socket.on(consts.ON_TYPING, (receiverUid, isRoomOrPvRoom) => {
+            if (isRoomOrPvRoom) {
                 socket.to(receiverUid).emit(consts.ON_TYPING, receiverUid, socket.user)
             } else {
+                let senderUid = socket.user.key.uid
                 socket.to(receiverUid).to(senderUid).emit(consts.ON_TYPING, senderUid)
             }
         })

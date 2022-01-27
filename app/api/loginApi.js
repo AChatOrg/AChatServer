@@ -1,10 +1,12 @@
 const { Server } = require("socket.io");
 
 const usersManager = require('../bl/usersManager')
+const roomsManager = require('../bl/roomsManager')
 const consts = require('../config').consts;
 const userApi = require('./usersRoomsApi');
 const chatApi = require('./chatApi');
 const User = require('../model/User').User;
+const UserDao = require('../da/UserDao');
 
 module.exports = {
     listen: function (server) {
@@ -89,6 +91,21 @@ module.exports = {
                     console.log('disconnected : ' + user.name);
                 }
             });
+
+            socket.on(consts.ON_LOGOUT, () => {
+                UserDao.logout(socket.user, (roomUid, memberCount) => {
+                    //onRemoveFromRoom
+                    let onlineMemberCount = roomsManager.updateMemberCount(roomUid, memberCount).onlineMemberCount;
+                    io.emit(consts.ON_ROOM_MEMBER_REMOVED, roomUid, memberCount, socket.user.name, onlineMemberCount);
+                })
+                    .then(oldUser => {
+                        socket.emit(consts.ON_LOGOUT, true);
+                        console.log('logout : ' + oldUser.name);
+                    }).catch(err => {
+                        console.log(err)
+                        socket.emit(consts.ON_LOGOUT, false);
+                    })
+            })
 
             userApi.listen(io, socket);
             chatApi.listen(io, socket);

@@ -60,13 +60,30 @@ module.exports = {
         RoomModel.findOneAndUpdate(query, update, (err, res) => { })
     },
 
-    removeMember: function (uid, userUid) {
-        let query = { uid: uid },
+    removeMember: function (roomUid, userUid, onRemove) {
+        let query = { uid: roomUid },
             update = {
                 $pull: { members: { uid: userUid } },
             };
 
-        RoomModel.findOneAndUpdate(query, update, (err, res) => { })
+        RoomModel.findOneAndUpdate(query, update, { new: true }, (err, room) => {
+            if (!err && room) {
+                onRemove(room.uid, room.memberUids.length)
+            }
+        }).lean()
+    },
+
+    removeMemberUid: function (roomUid, userUid, onRemove) {
+        let query = { uid: roomUid },
+            update = {
+                $pull: { memberUids: userUid },
+            };
+
+        RoomModel.findOneAndUpdate(query, update, { new: true }, (err, room) => {
+            if (!err && room) {
+                onRemove(room.uid, room.memberUids.length)
+            }
+        }).lean()
     },
 
     addMemberIfNotExist: function (roomUid, user) {

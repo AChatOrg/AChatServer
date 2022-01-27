@@ -40,5 +40,12 @@ module.exports = {
                 socket.emit(consts.ON_CREATE_ROOM, false);
             })
         })
+
+        socket.on(consts.ON_REQUEST_ROOM_MEMBER_COUNT, roomUid => {
+            let room = roomsManager.getRoom(roomUid)
+            if (room) {
+                socket.emit(consts.ON_REQUEST_ROOM_MEMBER_COUNT, room.key.memberCount, room.onlineMemberCount)
+            }
+        })
     }
 };

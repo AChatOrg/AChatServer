@@ -55,6 +55,7 @@ class Tree {
             oldRoom.key.memberCount = memberCount;
             this.map.delete(uid);
             this.map.set(uid, oldRoom.key);
+            return oldRoom;
         }
     }
 

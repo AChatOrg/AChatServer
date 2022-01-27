@@ -20,8 +20,10 @@ const consts = {
     ON_USERS: 'users',
     ON_ROOMS: 'rooms',
     ON_CREATE_ROOM: "createRoom",
+    ON_REQUEST_ROOM_MEMBER_COUNT: "requestRoomMemberCount",
+
     /*On Pv Chat*/
-    ON_MSG: 'message',
+    ON_MSG: 'msg',
     ON_MSG_SENT: 'msgSent',
     ON_MSG_RECEIVED: 'msgReceived',
     ON_MSG_READ: 'msgRead',
