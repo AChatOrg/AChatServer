@@ -22,11 +22,17 @@ const userSchema = new mongoose.Schema({
 
     offlineReadMessageUids: [{ type: String, required: true, index: true }],
 
-    roomUids: [{ type: String, index: true}]
+    roomUids: [{ type: String, index: true }],
+
+    viewsCount: { type: Number, default: 0 },
+    likesCount: { type: Number, default: 0 },
+    friendsCount: { type: Number, default: 0 },
+    // friendList: [this.userSchema],
+    // viewerList: [this.userSchema]
 }, {
     timestamps: true
 });
 
 const UserModel = mongoose.model('User', userSchema);
 
-module.exports = {UserModel, userSchema};
+module.exports = { UserModel, userSchema };

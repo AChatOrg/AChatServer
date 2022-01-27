@@ -26,7 +26,7 @@ module.exports = {
     },
 
     updateUser: function (user) {
-        return new Promise((resolve, reject)=>{
+        return new Promise((resolve, reject) => {
             UserDao.update(user).then(userResult => {
                 resolve(userResult);
             }).catch(err => {
@@ -45,6 +45,22 @@ module.exports = {
 
     update: function (user) {
         userList.update(user.key.uid, user)
+    },
+
+    getUserInfo: function (uid) {
+        return new Promise((resolve, reject) => {
+            UserDao.find(uid).then(user => {
+                let userInfo = {
+                    viewsCount: user.viewsCount,
+                    likesCount: user.likesCount,
+                    friendsCount: user.friendsCount,
+                    friendList: user.friendList,
+                    viewerList: user.viewerList
+                }
+                resolve(userInfo)
+            })
+                .catch(err => reject(err))
+        })
     },
 
     register: function (user) {

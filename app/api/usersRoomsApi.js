@@ -37,6 +37,14 @@ module.exports = {
                 .catch(err => { console.log(err) })
         })
 
+        socket.on(consts.ON_REQUEST_USER_INFO, userUid => {
+            usersManager.getUserInfo(userUid).then(userInfo => {
+                socket.emit(consts.ON_REQUEST_USER_INFO, "success", userInfo)
+            })
+                .catch(err => {
+                    socket.emit(consts.ON_REQUEST_USER_INFO, "notFound", "{}")
+                })
+        })
         //..................................................
 
         socket.on(consts.ON_ROOMS, () => {
