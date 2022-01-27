@@ -16,6 +16,7 @@ const consts = {
     ON_ROOM_DELETE: 'roomDelete',
     ON_ROOM_MEMBER_ADDED: 'roomMemberAdded',
     ON_ROOM_MEMBER_REMOVED: 'roomMemberRemoved',
+    ON_ROOM_ONLINE_MEMBER_COUNT: 'roomOnlineMemberCount',
     /*On Users*/
     ON_USERS: 'users',
     ON_ROOMS: 'rooms',

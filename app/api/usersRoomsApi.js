@@ -11,8 +11,21 @@ module.exports = {
 
         socket.on(consts.ON_ONLINE_TIME, isOnline => {
             let time = (isOnline ? 0 : Date.now())
+            let userUid = socket.user.key.uid;
             usersManager.updateUser({ androidId: socket.user.androidId, onlineTime: time })
-            socket.broadcast.emit(consts.ON_ONLINE_TIME, socket.user.key.uid, time);
+            socket.broadcast.emit(consts.ON_ONLINE_TIME, userUid, time);
+
+            UserDao.find(userUid).then(user => {
+                let roomUids = user.roomUids
+                if (roomUids) {
+                    for (roomUid of roomUids) {
+                        let room = roomsManager.updateOnlineMemberCount(roomUid, isOnline);
+                        io.emit(consts.ON_ROOM_ONLINE_MEMBER_COUNT,
+                            roomUid, room.key.memberCount,
+                            room.onlineMemberCount);
+                    }
+                }
+            }).catch(err => console.log(err))
         })
 
         socket.on(consts.ON_ONLINE_TIME_CONTACTS, uidArray => {

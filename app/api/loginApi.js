@@ -85,6 +85,18 @@ module.exports = {
                 usersManager.updateUser(user.key.uid, { onlineTime: time })
                 socket.broadcast.emit(consts.ON_ONLINE_TIME, socket.user.key.uid, time);
 
+                UserDao.find(userId).then(user => {
+                    let roomUids = user.roomUids
+                    if (roomUids) {
+                        for (roomUid of roomUids) {
+                            let room = roomsManager.updateOnlineMemberCount(roomUid, false);
+                            io.emit(consts.ON_ROOM_ONLINE_MEMBER_COUNT,
+                                roomUid, room.key.memberCount,
+                                room.onlineMemberCount);
+                        }
+                    }
+                }).catch(err => console.log(err))
+
                 if (isDisconnected) {
                     usersManager.userList.remove(userId);
                     socket.broadcast.emit(consts.ON_USER_LEFT, user);
@@ -95,8 +107,8 @@ module.exports = {
             socket.on(consts.ON_LOGOUT, () => {
                 UserDao.logout(socket.user, (roomUid, memberCount) => {
                     //onRemoveFromRoom
-                    let onlineMemberCount = roomsManager.updateMemberCount(roomUid, memberCount).onlineMemberCount;
-                    io.emit(consts.ON_ROOM_MEMBER_REMOVED, roomUid, memberCount, socket.user.name, onlineMemberCount);
+                    let room = roomsManager.updateMemberCount(roomUid, memberCount, false);
+                    io.emit(consts.ON_ROOM_MEMBER_REMOVED, roomUid, memberCount, socket.user.name, room.onlineMemberCount);
                 })
                     .then(oldUser => {
                         socket.emit(consts.ON_LOGOUT, true);

@@ -26,11 +26,11 @@ module.exports = {
                 if (room && (room.gender == consts.GENDER_MIXED || (room.gender == socket.user.gender))) {
                     UserDao.addRoomUidIfNotExist(message.senderUid, message.receiverUid)
                     RoomDao.addMemberUidIfNotExist(message.receiverUid, socket.user.key.uid, (memberCount => {
-                        let onlineMemberCount =
-                            roomsManager.updateMemberCount(message.receiverUid, memberCount).onlineMemberCount;
+                        let room =
+                            roomsManager.updateMemberCount(message.receiverUid, memberCount, true);
                         io.emit(consts.ON_ROOM_MEMBER_ADDED,
                             message.receiverUid, memberCount,
-                            socket.user.name, onlineMemberCount);
+                            socket.user.name, room.onlineMemberCount);
                     }))
                     socket.to(message.receiverUid).emit(consts.ON_MSG, message);
                 }

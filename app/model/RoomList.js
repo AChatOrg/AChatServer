@@ -49,10 +49,29 @@ class Tree {
         }
     }
 
-    updateMemberCount(uid, memberCount) {
+    updateMemberCount(uid, memberCount, isAdded) {
         let oldRoom = this.get(uid);
         if (oldRoom) {
             oldRoom.key.memberCount = memberCount;
+            if (isAdded && oldRoom.onlineMemberCount < memberCount) {
+                oldRoom.onlineMemberCount = oldRoom.onlineMemberCount + 1;
+            } else if (!isAdded && oldRoom.onlineMemberCount > 0) {
+                oldRoom.onlineMemberCount = oldRoom.onlineMemberCount - 1;
+            }
+            this.map.delete(uid);
+            this.map.set(uid, oldRoom.key);
+            return oldRoom;
+        }
+    }
+
+    updateOnlineMemberCount(uid, isAdded) {
+        let oldRoom = this.get(uid);
+        if (oldRoom) {
+            if (isAdded && oldRoom.onlineMemberCount < oldRoom.key.memberCount) {
+                oldRoom.onlineMemberCount = oldRoom.onlineMemberCount + 1;
+            } else if (!isAdded && oldRoom.onlineMemberCount > 0) {
+                oldRoom.onlineMemberCount = oldRoom.onlineMemberCount - 1;
+            }
             this.map.delete(uid);
             this.map.set(uid, oldRoom.key);
             return oldRoom;

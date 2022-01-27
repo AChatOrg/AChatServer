@@ -69,9 +69,9 @@ module.exports = {
         UserModel.findOneAndUpdate(query, update, (err, res) => { })
     },
 
-    find: function (receiverUid) {
+    find: function (uid) {
         return new Promise((resolve, reject) => {
-            UserModel.findOne({ uid: receiverUid }, (err, userFound) => {
+            UserModel.findOne({ uid: uid }, (err, userFound) => {
                 if (err)
                     reject(err);
                 else

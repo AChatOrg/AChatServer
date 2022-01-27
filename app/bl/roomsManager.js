@@ -51,8 +51,12 @@ module.exports = {
         })
     },
 
-    updateMemberCount: function (roomUid, memberCount) {
-        return roomList.updateMemberCount(roomUid, memberCount);
+    updateMemberCount: function (roomUid, memberCount, isAdded) {
+        return roomList.updateMemberCount(roomUid, memberCount, isAdded);
+    },
+
+    updateOnlineMemberCount: function (roomUid, isAdded) {
+        return roomList.updateOnlineMemberCount(roomUid, isAdded);
     },
 
     getRoom: function(roomUid){
