@@ -38,13 +38,22 @@ module.exports = {
         })
 
         socket.on(consts.ON_REQUEST_USER_INFO, userUid => {
-            usersManager.getUserInfo(userUid).then(userInfo => {
+            usersManager.getUserInfo(userUid, socket.user.key.uid).then(userInfo => {
                 socket.emit(consts.ON_REQUEST_USER_INFO, "success", userInfo)
                 UserDao.addViewer(userUid, socket.user)
             })
                 .catch(err => {
                     socket.emit(consts.ON_REQUEST_USER_INFO, "notFound", "{}")
                 })
+        })
+
+
+        socket.on(consts.ON_REQUEST_LIKE_USER, userUid => {
+            UserDao.likeUser(userUid, socket.user.key.uid).then(result => {
+                socket.emit(consts.ON_REQUEST_LIKE_USER, result[0], result[1])
+            }).catch(err => {
+                socket.emit(consts.ON_REQUEST_LIKE_USER, 0, 0)
+            })
         })
         //..................................................
 

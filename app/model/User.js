@@ -10,12 +10,13 @@ class Key {
 
 class User {
 
-    constructor(name, bio, gender, avatars, uid, rank, score, loginTime) {
+    constructor(name, bio, gender, avatars, uid, rank, score, loginTime, username) {
         this.name = name;
         this.bio = bio;
         this.gender = gender;
         this.avatars = avatars;
         this.key = new Key(uid, rank, score, loginTime);
+        this.username = username;
     }
 
     update(newUser) {
@@ -27,6 +28,7 @@ class User {
         this.key.rank = newUser.key.rank;
         this.key.score = newUser.key.score;
         this.key.loginTime = newUser.key.loginTime;
+        this.username = newUser.username;
     }
 }
 

@@ -38,7 +38,9 @@ const userSchema = new mongoose.Schema({
         name: { type: String, require: true },
         rank: { type: Number, default: 0 },
         avatars: [{ type: String }]
-    }]
+    }],
+
+    likerUids: [String]
 }, {
     timestamps: true
 });

@@ -21,16 +21,17 @@ module.exports = {
                     case consts.loginGuest:
                         user = new User(data.name, data.bio, data.gender, [], data.uid, 0, 0, Date.now());
                         user.androidId = data.androidId;
-                        user.username = user.androidId;
+                        user.username = 'anonymous';
                         user.offlineMessages = []
                         user.offlineReadMessageUids = []
                         user.roomUids = []
                         user.friendUids = []
                         user.viewerUids = []
+                        user.likerUids = []
                         usersManager.putUser(user).then(userLogged => {
                             socket.user = new User(userLogged.name, userLogged.bio, userLogged.gender,
                                 userLogged.avatars, userLogged.uid, userLogged.rank, userLogged.score,
-                                userLogged.loginTime)
+                                userLogged.loginTime, userLogged.username)
                             socket.user.androidId = userLogged.androidId;
                             socket.user.username = userLogged.username;
                             socket.user.onlineTime = userLogged.onlineTime;
@@ -44,11 +45,11 @@ module.exports = {
                     case consts.reconnectGuest:
                         user = new User(data.name, data.bio, data.gender, [], data.uid, 0, 0, Date.now());
                         user.androidId = data.androidId;
-                        user.username = user.androidId;
+                        user.username = 'anonymous';
                         usersManager.updateUser(user).then(userLogged => {
                             socket.user = new User(userLogged.name, userLogged.bio, userLogged.gender,
                                 userLogged.avatars, userLogged.uid, userLogged.rank, userLogged.score,
-                                userLogged.loginTime)
+                                userLogged.loginTime, userLogged.username)
                             socket.user.androidId = userLogged.androidId;
                             socket.user.username = userLogged.username;
                             socket.user.onlineTime = userLogged.onlineTime;

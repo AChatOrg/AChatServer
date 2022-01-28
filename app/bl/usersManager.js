@@ -49,15 +49,20 @@ module.exports = {
         userList.update(user.key.uid, user)
     },
 
-    getUserInfo: function (uid) {
+    getUserInfo: function (uid, requesterUid) {
         return new Promise((resolve, reject) => {
             UserDao.find(uid).then(user => {
+                let likedByMe = false;
+                if (user.likerUids.includes(requesterUid)) {
+                    likedByMe = true;
+                }
                 let userInfo = {
                     viewsCount: user.viewsCount,
                     likesCount: user.likesCount,
                     friendsCount: user.friendsCount,
                     friendList: profileUsers,
-                    viewerList: profileUsers
+                    viewerList: profileUsers,
+                    likedByMe: likedByMe
                 }
                 resolve(userInfo)
             })

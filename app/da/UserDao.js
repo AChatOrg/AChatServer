@@ -150,12 +150,16 @@ module.exports = {
                     androidId: user.androidId,
                     uid: user.key.uid,
                     name: user.name,
+                    viewsCount: 0,
+                    likesCount: 0,
+                    friendsCount: 0,
                     $set: {
                         offlineMessages: [],
                         offlineReadMessageUids: [],
                         roomUids: [],
-                        friendUids: [],
-                        viewerUids: []
+                        friends: [],
+                        viewers: [],
+                        likerUids: []
                     }
                 },
                 options = {
@@ -219,5 +223,36 @@ module.exports = {
                 }
             })
         }
+    },
+
+    likeUser: function (userUid, requesterUid) {
+        return new Promise((resolve, reject) => {
+            UserModel.findOne({ uid: userUid }, (err, user) => {
+                if (!err && user) {
+                    if (removeFromArrayIfExist(user.likerUids, requesterUid)) {
+                        user.likesCount = user.likesCount - 1;
+                        user.save()
+                        resolve([-1, user.likerUids.length])
+                    } else {
+                        user.likerUids.push(requesterUid);
+                        user.likesCount = user.likesCount + 1;
+                        user.save()
+                        resolve([1, user.likerUids.length])
+                    }
+                } else {
+                    reject(err)
+                }
+            })
+        })
     }
+}
+
+function removeFromArrayIfExist(array, element) {
+    for (let i = 0; i < array.length; i++) {
+        if (array[i] == element) {
+            array.splice(i, 1);
+            return true;
+        }
+    }
+    return false;
 }
