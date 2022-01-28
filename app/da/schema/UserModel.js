@@ -27,8 +27,18 @@ const userSchema = new mongoose.Schema({
     viewsCount: { type: Number, default: 0 },
     likesCount: { type: Number, default: 0 },
     friendsCount: { type: Number, default: 0 },
-    // friendList: [this.userSchema],
-    // viewerList: [this.userSchema]
+    friends: [{
+        uid: { type: String, require: true },
+        name: { type: String, require: true },
+        rank: { type: Number, default: 0 },
+        avatars: [{ type: String }]
+    }],
+    viewers: [{
+        uid: { type: String, require: true },
+        name: { type: String, require: true },
+        rank: { type: Number, default: 0 },
+        avatars: [{ type: String }]
+    }]
 }, {
     timestamps: true
 });

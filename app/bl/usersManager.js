@@ -4,9 +4,11 @@ const User = require('../model/User').User;
 
 const userList = new UserList();
 
+const profileUsers = []
 //////////////////////////
 for (let i = 0; i < 10; i++) {
     let user = new User("name " + i, "bio " + i, Math.random() < 0.5 ? 1 : 2, ['https://i.pravatar.cc/150?img=' + Math.random()], i, Math.floor(Math.random() * (6 - 0 + 1) + 0), i, i);
+    profileUsers.push({ uid: user.key.uid, name: user.name, rank: user.key.rank, avatars: user.avatars })
     userList.add(user);
 }
 //////////////////////////
@@ -54,8 +56,8 @@ module.exports = {
                     viewsCount: user.viewsCount,
                     likesCount: user.likesCount,
                     friendsCount: user.friendsCount,
-                    friendList: user.friendList,
-                    viewerList: user.viewerList
+                    friendList: profileUsers,
+                    viewerList: profileUsers
                 }
                 resolve(userInfo)
             })

@@ -21,7 +21,10 @@ module.exports = {
                     $set: {
                         offlineMessages: user.offlineMessages,
                         offlineReadMessageUids: user.offlineReadMessageUids,
-                        roomUids: user.roomUids
+                        roomUids: user.roomUids,
+                        friendUids: user.friendUids,
+                        viewerUids: user.viewerUids
+
                     }
                 },
                 options = {
@@ -150,7 +153,9 @@ module.exports = {
                     $set: {
                         offlineMessages: [],
                         offlineReadMessageUids: [],
-                        roomUids: []
+                        roomUids: [],
+                        friendUids: [],
+                        viewerUids: []
                     }
                 },
                 options = {
@@ -171,5 +176,48 @@ module.exports = {
                 }
             }).lean()
         })
+    },
+
+    addViewer: function (userUid, userViewer) {
+        if (userUid != userViewer.key.uid) {
+            let viewer = {
+                uid: userViewer.key.uid,
+                name: userViewer.name,
+                rank: userViewer.key.rank,
+                avatars: userViewer.avatars
+            }
+            UserModel.findOne({ uid: userUid }, (err, user) => {
+                if (!err && user) {
+                    let viewers = user.viewers.filter(u => u.uid != viewer.uid)
+                    if (viewers.length == user.viewers.length)
+                        user.viewsCount = user.viewsCount + 1;
+                    viewers.unshift(viewer);
+                    if (viewers.length > 10) {
+                        viewers.pop()
+                    }
+                    user.viewers = viewers;
+                    user.save()
+                }
+            })
+        }
+    },
+
+    addFriend: function (userUid, friendUser) {
+        if (userUid != friendUser.key.uid) {
+            let friend = {
+                uid: friendUser.key.uid,
+                name: friendUser.name,
+                rank: friendUser.key.rank,
+                avatars: friendUser.avatars
+            }
+            UserModel.findOne({ uid: userUid }, (err, user) => {
+                if (!err && user) {
+                    if (!user.friends.some(u => u.uid == friend.uid)) {
+                        user.friends.push(friend)
+                        user.save()
+                    }
+                }
+            })
+        }
     }
 }

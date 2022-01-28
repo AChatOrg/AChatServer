@@ -40,6 +40,7 @@ module.exports = {
         socket.on(consts.ON_REQUEST_USER_INFO, userUid => {
             usersManager.getUserInfo(userUid).then(userInfo => {
                 socket.emit(consts.ON_REQUEST_USER_INFO, "success", userInfo)
+                UserDao.addViewer(userUid, socket.user)
             })
                 .catch(err => {
                     socket.emit(consts.ON_REQUEST_USER_INFO, "notFound", "{}")

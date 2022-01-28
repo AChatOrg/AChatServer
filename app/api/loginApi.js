@@ -25,6 +25,8 @@ module.exports = {
                         user.offlineMessages = []
                         user.offlineReadMessageUids = []
                         user.roomUids = []
+                        user.friendUids = []
+                        user.viewerUids = []
                         usersManager.putUser(user).then(userLogged => {
                             socket.user = new User(userLogged.name, userLogged.bio, userLogged.gender,
                                 userLogged.avatars, userLogged.uid, userLogged.rank, userLogged.score,
