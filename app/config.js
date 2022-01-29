@@ -24,6 +24,8 @@ const consts = {
     ON_REQUEST_ROOM_MEMBER_COUNT: "requestRoomMemberCount",
     ON_REQUEST_USER_INFO: "requestUserInfo",
     ON_REQUEST_LIKE_USER: "requestLikeUser",
+    ON_REQUEST_EDIT_PROFILE: "requestEditProfile",
+    ON_USER_EDIT: "userEdit",
 
     /*On Pv Chat*/
     ON_MSG: 'msg',

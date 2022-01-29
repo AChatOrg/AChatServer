@@ -2,6 +2,7 @@ const usersManager = require('../bl/usersManager')
 const roomsManager = require('../bl/roomsManager')
 const consts = require('../config').consts;
 const UserDao = require('../da/UserDao')
+const User = require('../model/User').User
 
 module.exports = {
     listen: function (io, socket) {
@@ -53,6 +54,19 @@ module.exports = {
                 socket.emit(consts.ON_REQUEST_LIKE_USER, result[0], result[1])
             }).catch(err => {
                 socket.emit(consts.ON_REQUEST_LIKE_USER, 0, 0)
+            })
+        })
+
+        socket.on(consts.ON_REQUEST_EDIT_PROFILE, user => {
+            user = JSON.parse(user)
+            user.androidId = socket.user.androidId;
+            UserDao.update(user).then(u => {
+                let usr = new User(u.name, u.bio, u.gender, u.avatars, u.uid, u.rank, u.score, u.loginTime, u.username)
+                socket.emit(consts.ON_REQUEST_EDIT_PROFILE, true, usr)
+                io.emit(consts.ON_USER_EDIT, usr)
+                usersManager.update(usr);
+            }).catch(err => {
+                socket.emit(consts.ON_REQUEST_EDIT_PROFILE, false, new User())
             })
         })
         //..................................................
