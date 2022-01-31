@@ -69,6 +69,14 @@ module.exports = {
                 socket.emit(consts.ON_REQUEST_EDIT_PROFILE, false, new User())
             })
         })
+
+        socket.on(consts.ON_REQUEST_CHECK_USERNAME, username => {
+            UserDao.findByUsername(username).then(user => {
+                socket.emit(consts.ON_REQUEST_CHECK_USERNAME, user != null)
+            }).catch(err => {
+                socket.emit(consts.ON_REQUEST_CHECK_USERNAME, false)
+            })
+        })
         //..................................................
 
         socket.on(consts.ON_ROOMS, () => {

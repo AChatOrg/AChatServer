@@ -28,6 +28,7 @@ module.exports = {
                         user.friendUids = []
                         user.viewerUids = []
                         user.likerUids = []
+                        user.avatars = ['https://i.pravatar.cc/150?img=1', 'https://i.pravatar.cc/150?img=2', 'https://i.pravatar.cc/150?img=3', 'https://i.pravatar.cc/150?img=4', 'https://i.pravatar.cc/150?img=5', 'https://i.pravatar.cc/150?img=6']
                         usersManager.putUser(user).then(userLogged => {
                             socket.user = new User(userLogged.name, userLogged.bio, userLogged.gender,
                                 userLogged.avatars, userLogged.uid, userLogged.rank, userLogged.score,

@@ -1,5 +1,7 @@
 const port = 24240;
 const mongodpServerUrl = 'mongodb://localhost/AChat';
+const rootDir = __dirname
+
 const consts = {
     /*Rooms*/
     MAIN_ROOM_UID: "main",
@@ -26,6 +28,8 @@ const consts = {
     ON_REQUEST_LIKE_USER: "requestLikeUser",
     ON_REQUEST_EDIT_PROFILE: "requestEditProfile",
     ON_USER_EDIT: "userEdit",
+    ON_REQUEST_CHECK_USERNAME: "requestCheckUsername",
+
 
     /*On Pv Chat*/
     ON_MSG: 'msg',
@@ -85,5 +89,6 @@ const consts = {
 module.exports = {
     port,
     mongodpServerUrl,
-    consts
+    consts,
+    rootDir
 }

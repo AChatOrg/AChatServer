@@ -244,6 +244,18 @@ module.exports = {
                 }
             })
         })
+    },
+
+    findByUsername: function (username) {
+        return new Promise((resolve, reject) => {
+            UserModel.findOne({ username: username }, (err, user) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(user)
+                }
+            }).lean()
+        })
     }
 }
 
