@@ -64,7 +64,7 @@ module.exports = {
                         user.passwordHash = hash
                         user.rank = consts.RANK_MEMBER
                         user.tokenKey = crypto.randomBytes(256).toString('base64')
-                        jwt.sign({ username: username }, user.tokenKey, { algorithm: 'HS256', expiresIn: 10 }, (err, token) => {
+                        jwt.sign({ username: username }, user.tokenKey, { algorithm: 'HS256', expiresIn: '1d' }, (err, token) => {
                             if (err) {
                                 reject(err)
                             } else {
@@ -106,7 +106,7 @@ module.exports = {
                     bcrypt.compare(password, userLogged.passwordHash).then(res => {
                         if (res) {
                             userLogged.tokenKey = crypto.randomBytes(256).toString('base64')
-                            jwt.sign({ username: username }, userLogged.tokenKey, { algorithm: 'HS256', expiresIn: 10 }, (err, token) => {
+                            jwt.sign({ username: username }, userLogged.tokenKey, { algorithm: 'HS256', expiresIn: '1d' }, (err, token) => {
                                 if (err) {
                                     reject(err)
                                 } else {
@@ -115,6 +115,7 @@ module.exports = {
                                         if (err) {
                                             reject(err)
                                         } else {
+                                            console.log(refreshToken);
                                             userLogged.save()
                                             resolve({ dbUser: userLogged, token: token, refreshToken: refreshToken })
                                         }
@@ -145,13 +146,13 @@ module.exports = {
                             if (err.expiredAt < new Date().getTime()) {
                                 reject(consts.CONNECTION_ERR_TOKEN_EXPIRED)
                             } else {
-                                reject(err.name)
+                                reject(consts.CONNECTION_ERR_REFRESH_TOKEN_EXPIRED)
                             }
                         } else if (payload) {
                             let usrnm = payload.username;
                             if (usrnm && usrnm == username) {
                                 userFound.tokenKey = crypto.randomBytes(256).toString('base64')
-                                jwt.sign({ username: username }, userFound.tokenKey, { algorithm: 'HS256', expiresIn: 10 }, (err, token) => {
+                                jwt.sign({ username: username }, userFound.tokenKey, { algorithm: 'HS256', expiresIn: '1d' }, (err, token) => {
                                     if (err) {
                                         reject(err)
                                     } else {
@@ -188,16 +189,15 @@ module.exports = {
                 if (userFound) {
                     jwt.verify(refreshToken, userFound.tokenKey, { algorithms: ['HS256'] }, (err, payload) => {
                         if (err) {
-                            if (err.name == jwt.TokenExpiredError) {
-                                reject(consts.CONNECTION_ERR_REFRESH_TOKEN_EXPIRED)
-                            }
+                            reject(consts.CONNECTION_ERR_REFRESH_TOKEN_EXPIRED)
+
                         } else if (payload) {
                             let usrnm = payload.username;
                             if (usrnm && usrnm == username) {
                                 jwt.verify(userFound.token, userFound.tokenKey, { algorithms: ['HS256'] }, (err, payload) => {
                                     if (err) {//only if token has expired generate new token
                                         userFound.tokenKey = crypto.randomBytes(256).toString('base64')
-                                        jwt.sign({ username: username }, userFound.tokenKey, { algorithm: 'HS256', expiresIn: 10 }, (err, token) => {
+                                        jwt.sign({ username: username }, userFound.tokenKey, { algorithm: 'HS256', expiresIn: '1d' }, (err, token) => {
                                             if (err) {
                                                 reject(err)
                                             } else {
@@ -213,8 +213,8 @@ module.exports = {
                                             }
                                         })
                                     } else {//if user has a valid token force logout (someone has accessed to refresh token)
-                                        userFound.token = "";
-                                        userFound.tokenKey = "";
+                                        userFound.token = "attacks detected";
+                                        userFound.tokenKey = "try to connect with refreshToken, but access token has not expired";
                                         userFound.save();
                                         reject(consts.CONNECTION_ERR_REFRESH_TOKEN_EXPIRED)
                                     }

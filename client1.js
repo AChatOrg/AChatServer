@@ -7,13 +7,14 @@ const rl = readline.createInterface({
 });
 //---------------------------------------
 let Data = {
-    operation: 'loginGuest',
+    operation: 'reconnectUserByRefreshToken',
+    username:'hyapp',
     name: 'hosein',
     bio: 'archer',
     gender: 1
 };
 //---------------------------------------
-const socket = io('http://localhost:24240/', { query: { data: JSON.stringify(Data) } });
+const socket = io('http://localhost:24240/',{auth:{token:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imh5YXBwIiwiaWF0IjoxNjQzNzM0MTU0LCJleHAiOjE2NDYzMjYxNTR9.NU3bk6n-GivqMb3NLPO80kpnIO1uomY_Mx38nO9aMZw'}, query: { data: JSON.stringify(Data) } });
 //--------------------------------------
 const recursiveAsyncReadLine = function () {
     rl.question('', function (answer) {
