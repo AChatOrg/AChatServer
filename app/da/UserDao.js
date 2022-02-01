@@ -76,7 +76,7 @@ module.exports = {
                 } else {
                     resolve(user)
                 }
-            }).lean()
+            })
         })
     },
 

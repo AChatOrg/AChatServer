@@ -10,9 +10,11 @@ const consts = {
     reconnectGuest: 'reconnectGuest',
     loginUser: 'loginUser',
     reconnectUser: "reconnectUser",
+    reconnectUserByRefreshToken: "reconnectUserByRefreshToken",
     /*On connection err*/
     CONNECTION_ERR_INCORRECT_PASS: "incorrectPass",
     CONNECTION_ERR_TOKEN_EXPIRED: "tokenExpired",
+    CONNECTION_ERR_REFRESH_TOKEN_EXPIRED: "refreshTokenExpired",
     /*On login*/
     ON_LOGGED: 'logged',
     ON_LOGOUT: 'logout',
