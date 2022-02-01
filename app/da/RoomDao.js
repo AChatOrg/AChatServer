@@ -91,19 +91,11 @@ module.exports = {
             if (!err && roomFound) {
                 if (!roomFound.members.some(u => u.uid == user.key.uid)) {
                     let u = {
-                        androidId: user.androidId,
-                        username: user.username,
-
                         uid: user.key.uid,
-                        rank: user.key.rank,
-                        score: user.key.score,
-                        loginTime: user.key.loginTime,
-
                         name: user.name,
                         bio: user.bio,
-                        gender: user.gender,
+                        rank: user.key.rank,
                         avatars: user.avatars,
-                        onlineTime: user.onlineTime
                     }
                     roomFound.members.push(u)
                     roomFound.save()

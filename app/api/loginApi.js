@@ -7,6 +7,7 @@ const userApi = require('./usersRoomsApi');
 const chatApi = require('./chatApi');
 const User = require('../model/User').User;
 const UserDao = require('../da/UserDao');
+const bcrypt = require('bcryptjs');
 
 module.exports = {
     listen: function (server) {
@@ -21,21 +22,15 @@ module.exports = {
                     case consts.loginGuest:
                         user = new User(data.name, data.bio, data.gender, [], data.uid, 0, 0, Date.now());
                         user.androidId = data.androidId;
-                        user.username = 'anonymous';
-                        user.offlineMessages = []
-                        user.offlineReadMessageUids = []
-                        user.roomUids = []
-                        user.friendUids = []
-                        user.viewerUids = []
-                        user.likerUids = []
+                        user.username = data.uid;
                         user.avatars = ['https://i.pravatar.cc/150?img=1', 'https://i.pravatar.cc/150?img=2', 'https://i.pravatar.cc/150?img=3', 'https://i.pravatar.cc/150?img=4', 'https://i.pravatar.cc/150?img=5', 'https://i.pravatar.cc/150?img=6']
-                        usersManager.putUser(user).then(userLogged => {
-                            socket.user = new User(userLogged.name, userLogged.bio, userLogged.gender,
-                                userLogged.avatars, userLogged.uid, userLogged.rank, userLogged.score,
-                                userLogged.loginTime, userLogged.username)
-                            socket.user.androidId = userLogged.androidId;
-                            socket.user.username = userLogged.username;
-                            socket.user.onlineTime = userLogged.onlineTime;
+                        UserDao.save(user).then(userSaved => {
+                            socket.user = new User(userSaved.name, userSaved.bio, userSaved.gender,
+                                userSaved.avatars, userSaved.uid, userSaved.rank, userSaved.score,
+                                userSaved.loginTime, userSaved.username)
+                            socket.user.androidId = userSaved.androidId;
+                            socket.user.username = userSaved.username;
+                            socket.user.onlineTime = userSaved.onlineTime;
                             console.log('success loginGuest : ' + user.name);
                             next();
                         }).catch(err => {
@@ -46,8 +41,9 @@ module.exports = {
                     case consts.reconnectGuest:
                         user = new User(data.name, data.bio, data.gender, [], data.uid, 0, 0, Date.now());
                         user.androidId = data.androidId;
-                        user.username = 'anonymous';
-                        usersManager.updateUser(user).then(userLogged => {
+                        user.username = data.uid;
+                        user.uid = data.uid;
+                        UserDao.update(user).then(userLogged => {
                             socket.user = new User(userLogged.name, userLogged.bio, userLogged.gender,
                                 userLogged.avatars, userLogged.uid, userLogged.rank, userLogged.score,
                                 userLogged.loginTime, userLogged.username)
@@ -59,6 +55,64 @@ module.exports = {
                         }).catch(err => {
                             console.log(err);
                             next(new Error(err));
+                        })
+                        break;
+                    case consts.loginUser:
+                        let username = data.username;
+                        let password = data.password;
+                        usersManager.loginByPass(username, password).then(res => {
+                            let userLogged = res.dbUser;
+                            let token = res.token;
+                            let refreshToken = res.refreshToken;
+
+                            socket.user = new User(userLogged.name, userLogged.bio, userLogged.gender,
+                                userLogged.avatars, userLogged.uid, userLogged.rank, userLogged.score,
+                                userLogged.loginTime, userLogged.username)
+
+                            socket.user.androidId = userLogged.androidId;
+                            socket.user.username = userLogged.username;
+                            socket.user.onlineTime = userLogged.onlineTime;
+
+                            socket.user.token = token;
+                            socket.user.refreshToken = refreshToken;
+
+                            console.log('success loginUser : ' + user.name);
+                            next();
+
+                        }).catch(err => {
+                            console.log(err);
+                            next(new Error(consts.CONNECTION_ERR_INCORRECT_PASS));
+                        })
+                        break;
+                    case consts.reconnectUser:
+                        let username = data.username;
+                        let token = socket.handshake.auth.token;
+                        usersManager.reconnectUser(username, token).then(res => {
+                            let userLogged = res.dbUser;
+                            let token = res.token;
+                            let refreshToken = res.refreshToken;
+
+                            socket.user = new User(userLogged.name, userLogged.bio, userLogged.gender,
+                                userLogged.avatars, userLogged.uid, userLogged.rank, userLogged.score,
+                                userLogged.loginTime, userLogged.username)
+
+                            socket.user.androidId = userLogged.androidId;
+                            socket.user.username = userLogged.username;
+                            socket.user.onlineTime = userLogged.onlineTime;
+
+                            socket.user.token = token;
+                            socket.user.refreshToken = refreshToken;
+
+                            console.log('success reconnectUser : ' + user.name);
+                            next();
+
+                        }).catch(err => {
+                            console.log(err);
+                            if (err == consts.CONNECTION_ERR_TOKEN_EXPIRED) {
+                                next(new Error(consts.CONNECTION_ERR_TOKEN_EXPIRED));
+                            } else {
+                                next(new Error(err));
+                            }
                         })
                         break;
                 }
@@ -75,21 +129,26 @@ module.exports = {
 
             let added = usersManager.addUserIfNotExist(user);
             if (added) {
-                socket.emit(consts.ON_LOGGED, user);
+                socket.emit(consts.ON_LOGGED, user, socket.user.token, socket.user.refreshToken);
                 socket.broadcast.emit(consts.ON_USER_CAME, user);
             }
+            socket.user.token = null;
+            socket.user.refreshToken = null;
+
+            userApi.listen(io, socket);
+            chatApi.listen(io, socket);
 
             socket.on("disconnect", async () => {
                 let user = socket.user
-                let userId = user.key.uid;
-                const matchingSockets = await io.in(userId).allSockets();
+                let userUid = user.key.uid;
+                const matchingSockets = await io.in(userUid).allSockets();
                 const isDisconnected = matchingSockets.size === 0;
 
                 let time = Date.now();
-                usersManager.updateUser(user.key.uid, { onlineTime: time })
+                UserDao.update({ uid: userUid, onlineTime: time })
                 socket.broadcast.emit(consts.ON_ONLINE_TIME, socket.user.key.uid, time);
 
-                UserDao.find(userId).then(user => {
+                UserDao.find(userUid).then(user => {
                     let roomUids = user.roomUids
                     if (roomUids) {
                         for (roomUid of roomUids) {
@@ -102,14 +161,14 @@ module.exports = {
                 }).catch(err => console.log(err))
 
                 if (isDisconnected) {
-                    usersManager.userList.remove(userId);
+                    usersManager.userList.remove(userUid);
                     socket.broadcast.emit(consts.ON_USER_LEFT, user);
                     console.log('disconnected : ' + user.name);
                 }
             });
 
             socket.on(consts.ON_LOGOUT, () => {
-                UserDao.logout(socket.user, (roomUid, memberCount) => {
+                UserDao.logout(socket.user.key.uid, (roomUid, memberCount) => {
                     //onRemoveFromRoom
                     let room = roomsManager.updateMemberCount(roomUid, memberCount, false);
                     io.emit(consts.ON_ROOM_MEMBER_REMOVED, roomUid, memberCount, socket.user.name, room.onlineMemberCount);
@@ -121,29 +180,19 @@ module.exports = {
                         console.log(err)
                         socket.emit(consts.ON_LOGOUT, false);
                     })
-            })
+            });
 
-            userApi.listen(io, socket);
-            chatApi.listen(io, socket);
+            socket.on(consts.ON_REQUEST_REGISTER, (username, password) => {
+                usersManager.register(socket.user, username, password).then(res => {
+                    socket.emit(consts.ON_REQUEST_REGISTER, res.user, res.token, res.refreshToken)
+                    io.emit(consts.ON_USER_LEFT, socket.user)
+                    socket.user = res.user;
+                    io.emit(consts.ON_USER_CAME, socket.user)
+                }).catch(err => {
+                    socket.emit(consts.ON_REQUEST_REGISTER, "", "", "")
+                    console.log(err);
+                })
+            })
         });
-        // app.post('/register', (req, res) => {
-        //     let body = req.body;
-        //     let user = new LoggedUser(null, body.username, body.password,
-        //         body.name, body.avatar, body.bio, body.gender, undefined, undefined);
-        //     loginManager.register(user)
-        //         .then(userSaved => {
-        //             res.json(userSaved);
-        //             console.log('success register :' + userSaved);
-        //         })
-        //         .catch(err => {
-        //             if (err.code === 11000) {
-        //                 res.status(409).send({ message: 'This username already exist.' });
-        //                 console.log('register : This username already exist.');
-        //             } else {
-        //                 res.status(400).send({ message: err });
-        //                 console.error('error register :' + err);
-        //             }
-        //         });
-        // });
     }
 };

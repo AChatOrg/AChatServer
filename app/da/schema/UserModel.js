@@ -4,11 +4,13 @@ const messageSchema = require('./MessageModel').messageSchema
 
 const userSchema = new mongoose.Schema({
     androidId: { type: String, required: true, index: true },
-    username: { type: String, index: true },
+    username: { type: String, required: true, index: true, unique: true },
     passwordHash: { type: String },
 
-    uid: { type: String, required: true, index: true },
-    rank: { type: Number, default: 0 },
+    tokenKey: { type: String },
+
+    uid: { type: String, required: true, index: true, unique: true },
+    rank: { type: Number, default: consts.RANK_GUEST },
     score: { type: Number, default: 0 },
     loginTime: { type: Number, default: 0 },
 
@@ -16,11 +18,11 @@ const userSchema = new mongoose.Schema({
     bio: { type: String, default: '' },
     gender: { type: Number, default: consts.GENDER_MALE },
     avatars: { type: [String] },
-    onlineTime: { type: Number, default: 0 },
+    onlineTime: { type: Number, default: consts.TIME_ONLINE },
 
     offlineMessages: [messageSchema],
 
-    offlineReadMessageUids: [{ type: String, required: true, index: true }],
+    offlineReadMessageUids: [{ type: String, index: true }],
 
     roomUids: [{ type: String, index: true }],
 

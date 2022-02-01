@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const userSchema = require('./UserModel').userSchema
+const consts = require('../../config').consts
 
 const RoomSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -11,7 +11,13 @@ const RoomSchema = new mongoose.Schema({
 
     isPv: { type: Boolean },
 
-    members: [userSchema],
+    members: [{
+        uid: { type: String, require: true },
+        name: { type: String, require: true },
+        bio: { type: String},
+        rank: { type: Number, default: consts.RANK_GUEST },
+        avatars: [{ type: String }]
+    }],
 
     memberUids: [String]
 }, {

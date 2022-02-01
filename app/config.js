@@ -8,7 +8,11 @@ const consts = {
     /*operation*/
     loginGuest: 'loginGuest',
     reconnectGuest: 'reconnectGuest',
-    login: 'login',
+    loginUser: 'loginUser',
+    reconnectUser: "reconnectUser",
+    /*On connection err*/
+    CONNECTION_ERR_INCORRECT_PASS: "incorrectPass",
+    CONNECTION_ERR_TOKEN_EXPIRED: "tokenExpired",
     /*On login*/
     ON_LOGGED: 'logged',
     ON_LOGOUT: 'logout',
@@ -29,8 +33,7 @@ const consts = {
     ON_REQUEST_EDIT_PROFILE: "requestEditProfile",
     ON_USER_EDIT: "userEdit",
     ON_REQUEST_CHECK_USERNAME: "requestCheckUsername",
-
-
+    ON_REQUEST_REGISTER: "requestRegister",
     /*On Pv Chat*/
     ON_MSG: 'msg',
     ON_MSG_SENT: 'msgSent',

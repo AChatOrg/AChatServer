@@ -2,50 +2,35 @@ const UserModel = require('./schema/UserModel').UserModel;
 const RoomDao = require('./RoomDao');
 
 module.exports = {
-    put: function (user) {
+    save: function (user) {
         return new Promise((resolve, reject) => {
-            let query = { androidId: user.androidId },
-                update = {
-                    androidId: user.androidId,
-                    username: user.username,
+            let userModel = new UserModel({
+                androidId: user.androidId,
+                username: user.username,
 
-                    uid: user.key.uid,
-                    loginTime: user.key.loginTime,
+                uid: user.key.uid,
+                rank: user.key.rank,
+                score: user.key.score,
+                loginTime: user.key.loginTime,
 
-                    name: user.name,
-                    bio: user.bio,
-                    gender: user.gender,
-                    avatars: user.avatars,
-                    onlineTime: user.onlineTime,
+                name: user.name,
+                bio: user.bio,
+                gender: user.gender,
+            });
 
-                    $set: {
-                        offlineMessages: user.offlineMessages,
-                        offlineReadMessageUids: user.offlineReadMessageUids,
-                        roomUids: user.roomUids,
-                        friendUids: user.friendUids,
-                        viewerUids: user.viewerUids
-
-                    }
-                },
-                options = {
-                    upsert: true,
-                    new: true,
-                    setDefaultsOnInsert: true,
-                };
-
-            UserModel.findOneAndUpdate(query, update, options, (err, doc) => {
+            userModel.save((err, savedUser) => {
                 if (err)
                     reject(err)
                 else
-                    resolve(doc)
-            }).lean()
+                    resolve(savedUser)
+            })
         })
     },
 
     update: function (user) {
         return new Promise((reslove, reject) => {
             options = { new: true, setDefaultsOnInsert: true };
-            UserModel.findOneAndUpdate({ androidId: user.androidId }, user, options, (err, doc) => {
+            UserModel.findOneAndUpdate({ uid: user.uid }, user, options, (err, doc) => {
                 if (err)
                     reject(err)
                 else
@@ -75,11 +60,23 @@ module.exports = {
     find: function (uid) {
         return new Promise((resolve, reject) => {
             UserModel.findOne({ uid: uid }, (err, userFound) => {
-                if (err)
+                if (err || !userFound)
                     reject(err);
                 else
                     resolve(userFound);
             })
+        })
+    },
+
+    findByUsername: function (username) {
+        return new Promise((resolve, reject) => {
+            UserModel.findOne({ username: username }, (err, user) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(user)
+                }
+            }).lean()
         })
     },
 
@@ -143,40 +140,19 @@ module.exports = {
         UserModel.findOneAndUpdate(query, update, (err, res) => { })
     },
 
-    logout: function (user, onRemoveRoom) {
+    logout: function (uid, onRemoveRoom) {
         return new Promise((resolve, reject) => {
-            let query = { androidId: user.androidId },
-                update = {
-                    androidId: user.androidId,
-                    uid: user.key.uid,
-                    name: user.name,
-                    viewsCount: 0,
-                    likesCount: 0,
-                    friendsCount: 0,
-                    $set: {
-                        offlineMessages: [],
-                        offlineReadMessageUids: [],
-                        roomUids: [],
-                        friends: [],
-                        viewers: [],
-                        likerUids: []
-                    }
-                },
-                options = {
-                    setDefaultsOnInsert: true,
-                };
-
-            UserModel.findOneAndUpdate(query, update, options, (err, oldUser) => {
+            UserModel.findOneAndDelete({ uid: uid }, (err, deletedUser) => {
                 if (err)
                     reject(err)
                 else {
-                    let roomUids = oldUser.roomUids;
+                    let roomUids = deletedUser.roomUids;
                     if (roomUids) {
                         for (roomUid of roomUids) {
-                            RoomDao.removeMemberUid(roomUid, oldUser.uid, onRemoveRoom)
+                            RoomDao.removeMemberUid(roomUid, deletedUser.uid, onRemoveRoom)
                         }
                     }
-                    resolve(oldUser)
+                    resolve(deletedUser)
                 }
             }).lean()
         })
@@ -245,18 +221,6 @@ module.exports = {
             })
         })
     },
-
-    findByUsername: function (username) {
-        return new Promise((resolve, reject) => {
-            UserModel.findOne({ username: username }, (err, user) => {
-                if (err) {
-                    reject(err)
-                } else {
-                    resolve(user)
-                }
-            }).lean()
-        })
-    }
 }
 
 function removeFromArrayIfExist(array, element) {

@@ -28,17 +28,11 @@ module.exports = {
         return new Promise((resolve, reject) => {
             if (room.gender == consts.GENDER_MIXED || room.gender == user.gender) {
                 let u = {
-                    androidId: user.androidId,
-                    username: user.username,
-
                     uid: user.key.uid,
-                    loginTime: user.key.loginTime,
-
                     name: user.name,
                     bio: user.bio,
-                    gender: user.gender,
+                    rank: user.key.rank,
                     avatars: user.avatars,
-                    onlineTime: user.onlineTime
                 }
                 let rom = new Room(uuidv4(), 1, Date.now(), room.name, 1, room.gender, room.avatars, false)
                 RoomDao.put(rom, [u]).then(r => {

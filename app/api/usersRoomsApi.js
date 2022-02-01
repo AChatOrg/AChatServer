@@ -13,7 +13,7 @@ module.exports = {
         socket.on(consts.ON_ONLINE_TIME, isOnline => {
             let time = (isOnline ? 0 : Date.now())
             let userUid = socket.user.key.uid;
-            usersManager.updateUser({ androidId: socket.user.androidId, onlineTime: time })
+            UserDao.update({ uid: userUid, onlineTime: time })
             socket.broadcast.emit(consts.ON_ONLINE_TIME, userUid, time);
 
             UserDao.find(userUid).then(user => {
@@ -59,7 +59,7 @@ module.exports = {
 
         socket.on(consts.ON_REQUEST_EDIT_PROFILE, user => {
             user = JSON.parse(user)
-            user.androidId = socket.user.androidId;
+            user.uid = socket.user.key.uid;
             UserDao.update(user).then(u => {
                 let usr = new User(u.name, u.bio, u.gender, u.avatars, u.uid, u.rank, u.score, u.loginTime, u.username)
                 socket.emit(consts.ON_REQUEST_EDIT_PROFILE, true, usr)
