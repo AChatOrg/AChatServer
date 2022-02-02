@@ -36,6 +36,10 @@ const consts = {
     ON_USER_EDIT: "userEdit",
     ON_REQUEST_CHECK_USERNAME: "requestCheckUsername",
     ON_REQUEST_REGISTER: "requestRegister",
+    ON_REQUEST_CHANGE_PASS: "requestChangePass",
+    /*On change pass*/
+    CHNG_PASS_MSG_SUCCESS:"success",
+    CHNG_PASS_MSG_WRONG_PASS: "wrongPass",
     /*On Pv Chat*/
     ON_MSG: 'msg',
     ON_MSG_SENT: 'msgSent',

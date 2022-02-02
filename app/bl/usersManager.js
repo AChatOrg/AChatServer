@@ -78,7 +78,7 @@ module.exports = {
                                                 let resultUser = new User(userUpdated.name, userUpdated.bio, userUpdated.gender,
                                                     userUpdated.avatars, userUpdated.uid, userUpdated.rank, userUpdated.score,
                                                     userUpdated.loginTime, userUpdated.username)
-                                                userList.remove(resultUser.uid);
+                                                userList.remove(resultUser.key.uid);
                                                 userList.add(resultUser);
                                                 resolve({ user: resultUser, token: token, refreshToken: refreshToken })
                                             } else {
@@ -229,6 +229,32 @@ module.exports = {
                 } else {
                     reject('user not found')
                 }
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    },
+
+    changePass: function (uid, currPass, newPass) {
+        return new Promise((resolve, reject) => {
+            UserDao.find(uid).then(user => {
+                bcrypt.compare(currPass, user.passwordHash).then(res => {
+                    if (res) {
+                        bcrypt.hash(newPass, 10, (err, hash) => {
+                            if (!err && hash) {
+                                user.passwordHash = hash;
+                                user.save()
+                                resolve(consts.CHNG_PASS_MSG_SUCCESS)
+                            } else {
+                                reject(err || 'error')
+                            }
+                        })
+                    } else {
+                        reject(consts.CHNG_PASS_MSG_WRONG_PASS)
+                    }
+                }).catch(err => {
+                    reject(err)
+                })
             }).catch(err => {
                 reject(err)
             })
