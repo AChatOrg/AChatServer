@@ -42,7 +42,7 @@ module.exports = {
                 await sharp(dir + file.name).resize(162, 162).toFile(dir + 'thumbnail\\' + file.name, (err) => {
                     if (err)
                         return res.status(500).send('upload error' + err);
-                    res.send(file.name);
+                    res.send('/avatar/' + uid + '/' + file.name);
                 });
             });
         }
