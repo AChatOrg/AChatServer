@@ -11,6 +11,8 @@ const consts = {
     loginUser: 'loginUser',
     reconnectUser: "reconnectUser",
     reconnectUserByRefreshToken: "reconnectUserByRefreshToken",
+    /*http endpoints*/
+    HTTP_REFRESH_TOKEN: 'refreshToken',
     /*On connection err*/
     CONNECTION_ERR_INCORRECT_PASS: "incorrectPass",
     CONNECTION_ERR_TOKEN_EXPIRED: "tokenExpired",
@@ -38,7 +40,7 @@ const consts = {
     ON_REQUEST_REGISTER: "requestRegister",
     ON_REQUEST_CHANGE_PASS: "requestChangePass",
     /*On change pass*/
-    CHNG_PASS_MSG_SUCCESS:"success",
+    CHNG_PASS_MSG_SUCCESS: "success",
     CHNG_PASS_MSG_WRONG_PASS: "wrongPass",
     /*On Pv Chat*/
     ON_MSG: 'msg',

@@ -7,11 +7,14 @@ const userApi = require('./usersRoomsApi');
 const chatApi = require('./chatApi');
 const User = require('../model/User').User;
 const UserDao = require('../da/UserDao');
+const uplaod= require('./upload');
+
 const bcrypt = require('bcryptjs');
 
 module.exports = {
-    listen: function (server) {
+    listen: function (app, server) {
         const io = new Server(server);
+        uplaod.listen(app, io)
 
         io.use((socket, next) => {
             let data = JSON.parse(socket.handshake.query.data);
