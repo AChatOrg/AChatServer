@@ -8,7 +8,7 @@ const User = require('../model/User').User
 
 module.exports = {
 
-    listen: function (app, io) {
+    listen: function (app, io, userManager) {
 
         app.use(fileUpload({
             limits: { fileSize: 50 * 1024 * 1024 },
@@ -64,7 +64,8 @@ module.exports = {
 
                     let user = new User(dbUser.name, dbUser.bio, dbUser.gender, dbUser.avatars, dbUser.uid, dbUser.rank, dbUser.score, dbUser.loginTime, dbUser.username)
                     io.emit(consts.ON_USER_EDIT, user)
-
+                    userManager.update(user)
+                    
                     res.send(JSON.stringify(result));
                 });
             });

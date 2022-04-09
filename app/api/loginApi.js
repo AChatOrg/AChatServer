@@ -14,7 +14,7 @@ const bcrypt = require('bcryptjs');
 module.exports = {
     listen: function (app, server) {
         const io = new Server(server);
-        uplaod.listen(app, io)
+        uplaod.listen(app, io, usersManager);
 
         io.use((socket, next) => {
             let data = JSON.parse(socket.handshake.query.data);
